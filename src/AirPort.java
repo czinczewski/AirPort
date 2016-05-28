@@ -21,11 +21,9 @@ public class AirPort extends JFrame{
     private Image samolot;
     
     private boolean start = true; // zmienić na false   //wprowadzić zmiane
-    private int poziom = 1; //poziomy trudności - będa 3
-    private plane[] Flota;
-    
-    private int predkosc = 1;
-    
+    private int level = 1; 
+    private final plane[] Flota;
+        
     private Timer zegar;
     
 
@@ -33,28 +31,28 @@ public class AirPort extends JFrame{
     class Dzialanie extends TimerTask{
         public void run(){
             if(start){
-                if(poziom == 1){
-                    predkosc = 1;
-                }else if(poziom == 2){
-                    predkosc = 2;
-                }else if(poziom == 3){ //poziom nie do przejścia
-                    predkosc = 4;       //prawdopodobnie trzba mocno zwiększyć prędkość
-                }
-                
                 for(int i = 0; i < 6; i++){
+                    if(level <= 1){
+                        Flota[i].setSpeed(1);
+                    }else if(level == 2){
+                        Flota[i].setSpeed(2);
+                    }else if(level >= 3){      //poziom nie do przejścia
+                        Flota[i].setSpeed(4);   //prawdopodobnie trzba mocno zwiększyć prędkość
+                    }                           //sprawdzić drogi czy nie wypada z wyjątków
+                    
                     if(Flota[i].getLane()){
                         if(Flota[i].getY() > 500 && Flota[i].getX() >= 950){
-                            Flota[i].setY(Flota[i].getY() - predkosc);
+                            Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());
                             
                         }else if(Flota[i].getY() < 501 && Flota[i].getY() > 390 
                                 && Flota[i].getX() <= 950 && Flota[i].getX() > 840){
                             //trzeba zrobić ruch po okregu
-                            Flota[i].setY(Flota[i].getY() - predkosc);  
-                            Flota[i].setX(Flota[i].getX() - predkosc);
+                            Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());  
+                            Flota[i].setX(Flota[i].getX() - Flota[i].getSpeed());
                         }
                     }else{
                         if(Flota[i].getX() > 500 && Flota[i].getY() >= 955){
-                            Flota[i].setX(Flota[i].getX() - predkosc);                        
+                            Flota[i].setX(Flota[i].getX() - Flota[i].getSpeed());                        
                         }
                     } 
                 }
@@ -66,19 +64,19 @@ public class AirPort extends JFrame{
     }
     
     public class plane{
-        private final int wsp[] = new int[2];
-        private double degree; //kąt skretu        
-        private boolean tor;
-        private boolean wpowietrzu;
-        private int predkosc;
+        private final int   wsp[] = new int[2];
+        private double      degree; //kąt skretu        
+        private boolean     lane;
+        private boolean     position;
+        private int         speed;
         
-        public plane(int x, int y, boolean lane){
+        public plane(int x, int y, boolean iLane){
             wsp[0] = x;
             wsp[1] = y;
-            tor = lane;
-            wpowietrzu = true; 
+            lane = iLane;
+            position = true; //w powietrzu
         }
-        
+    
         public int      getX(){
             return wsp[0];
         }        
@@ -86,24 +84,29 @@ public class AirPort extends JFrame{
             return wsp[1];
         }       
         public boolean  getLane(){
-            return tor;
+            return lane;
         }        
         public boolean  getPosition(){
-            return wpowietrzu;
+            return position;
         }
-        //metod do pozyskanie prędkości
+        public int      getSpeed(){
+            return speed;
+        }
         //metoda do pozyskania kąta
-        public void     setX(int x){
-            wsp[0] = x;
+        public void     setX(int iX){
+            wsp[0] = iX;
         }        
-        public void     setY(int y){
-            wsp[1] = y;
+        public void     setY(int iY){
+            wsp[1] = iY;
         }        
-        public void     changeLane( boolean lane){
-            tor = lane;
+        public void     changeLane( boolean iLane){
+            lane = iLane;
         }        
-        public void     changePosition( boolean position){
-            wpowietrzu = position;
+        public void     changePosition( boolean iPosition){
+            position = iPosition;
+        }
+        public void     setSpeed(int iSpeed){
+            speed = iSpeed;
         }
         //metod do ustawienia prędkości
         //metoda do ustawienia kąta
@@ -126,9 +129,9 @@ public class AirPort extends JFrame{
         for(int i = 0; i < 6; i++){
             boolean iLane = Math.random() < 0.5;
             if(iLane){
-                Flota[i] = new plane(950, 955 + i*50, iLane );
+                Flota[i] = new plane(950, 955 + i * 50 * level, iLane);
             }else{
-                Flota[i] = new plane(950 + i* 50, 955 , iLane );
+                Flota[i] = new plane(950 + i * 50 * level, 955, iLane);
             }
         System.out.println("Samolot nr" + i + " [" + Flota[i].getX() + "," + Flota[i].getY() + "] " + Flota[i].getLane());    
         }
