@@ -4,7 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-
 /**
  * @author Aleksandra Wyszecka
  * @author Damian Winczewski
@@ -71,45 +70,51 @@ public class AirPort extends JFrame{
         private int         speed;
         
         public plane(int x, int y, boolean iLane){
-            wsp[0] = x;
-            wsp[1] = y;
-            lane = iLane;
-            position = true; //w powietrzu
+            wsp[0] =    x;
+            wsp[1] =    y;
+            lane =      iLane;
+            position =  true; //w powietrzu
+            degree =    0;
         }
-    
-        public int      getX(){
-            return wsp[0];
-        }        
-        public int      getY(){
-            return wsp[1];
-        }       
-        public boolean  getLane(){
-            return lane;
-        }        
-        public boolean  getPosition(){
-            return position;
-        }
-        public int      getSpeed(){
-            return speed;
-        }
-        //metoda do pozyskania kąta
-        public void     setX(int iX){
-            wsp[0] = iX;
-        }        
-        public void     setY(int iY){
-            wsp[1] = iY;
-        }        
-        public void     changeLane( boolean iLane){
-            lane = iLane;
-        }        
-        public void     changePosition( boolean iPosition){
-            position = iPosition;
-        }
-        public void     setSpeed(int iSpeed){
-            speed = iSpeed;
-        }
-        //metod do ustawienia prędkości
-        //metoda do ustawienia kąta
+        
+        //Sprawdzanie     
+            public int      getX(){
+                return wsp[0];
+            }        
+            public int      getY(){
+                return wsp[1];
+            }       
+            public boolean  getLane(){
+                return lane;
+            }        
+            public boolean  getPosition(){
+                return position;
+            }
+            public int      getSpeed(){
+                return speed;
+            }
+            public double   getDegree(){
+                return degree;
+            }
+        //Ustawianie
+            public void     setX(int iX){
+                wsp[0] = iX;
+            }        
+            public void     setY(int iY){
+                wsp[1] = iY;
+            }        
+            public void     changeLane( boolean iLane){
+                lane = iLane;
+            }        
+            public void     changePosition( boolean iPosition){
+                position = iPosition;
+            }
+            public void     setSpeed(int iSpeed){
+                speed = iSpeed;
+            }
+            public void     setDegree(double iDegree){
+                degree = iDegree;
+            }
     }
 
     AirPort(){
