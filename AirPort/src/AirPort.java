@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.ImageIcon;
@@ -51,6 +52,8 @@ public class AirPort extends JFrame{
                             //  NIE MAM NA TO SIŁY
                             Flota[i].setX((int) (901d - radius * Math.sin(radDegree)));
                             Flota[i].setY((int) (749d - radius * Math.cos(radDegree)));
+                        }else if(Flota[i].getX() > 200 && Flota[i].getX() < 800 && Flota[i].getY() > 2 ){
+                            
                         }
                     }else{  //drugi pas
                         if(Flota[i].getX() > 650 && Flota[i].getY() >= 826){
@@ -140,15 +143,19 @@ public class AirPort extends JFrame{
         menu = new ImageIcon("Obrazki/menu.png").getImage();
         lotnisko = new ImageIcon("Obrazki/lotnisko.png").getImage();
         samolot = new ImageIcon("Obrazki/samolot.png").getImage();      
+        
 
         Flota = new plane[6];
         for(int i = 0; i < 6; i++){
             boolean iLane = Math.random() < 0.5;
-            if(iLane){
-                Flota[i] = new plane(950, 955 + i * 50 * level, iLane);
-            }else{
-                Flota[i] = new plane(950 + i * 50 * level, 955, iLane);
-            }
+            
+            Random rand = new Random();            
+            int iRand = 50 * (rand.nextInt(5)+1);
+                if(iLane){
+                    Flota[i] = new plane(950, 955 + i * iRand * level, iLane);
+                }else{
+                    Flota[i] = new plane(950 + i * iRand * level, 955, iLane);
+                }
         System.out.println("Samolot nr" + i + " [" + Flota[i].getX() + "," + Flota[i].getY() + "] " + Flota[i].getLane());    
         }
         
