@@ -19,9 +19,11 @@ public class AirPort extends JFrame{
     private Image lotnisko;
     private Image samolot;
     
-    private boolean start = true; // zmienić na false   //wprowadzić zmiane
-    private int level = 1; 
-    private final plane[] Flota;
+    private boolean start       = true;   // zmienić na false   //wprowadzić zmiane
+    private int     level       = 1;      //wprowadzić zmiane
+    private final   plane[] Flota;
+    private double  radDegree   = 0;
+    private int     radius      = 100;
         
     private Timer zegar;
     
@@ -40,18 +42,19 @@ public class AirPort extends JFrame{
                     }                           //sprawdzić drogi czy nie wypada z wyjątków
                     
                     if(Flota[i].getLane()){
-                        if(Flota[i].getY() > 500 && Flota[i].getX() >= 950){
+                        if(Flota[i].getX() >= 800 && Flota[i].getY() >= 650){
                             Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());
                             
-                        }else if(Flota[i].getY() < 501 && Flota[i].getY() > 390 
-                                && Flota[i].getX() <= 950 && Flota[i].getX() > 840){
-                            //trzeba zrobić ruch po okregu
-                            Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());  
-                            Flota[i].setX(Flota[i].getX() - Flota[i].getSpeed());
+                        }else if(Flota[i].getX() > 800 && Flota[i].getY() < 650 && Flota[i].getY() > 500 && Flota[i].getDegree() <= 90 ){
+                            Flota[i].setDegree(Flota[i].getDegree() + (1 * Flota[i].getSpeed()));
+                            radDegree = (Math.PI * Flota[i].getDegree())/180;
+                            //  NIE MAM NA TO SIŁY
+                            Flota[i].setX((int) (901d - radius * Math.sin(radDegree)));
+                            Flota[i].setY((int) (749d - radius * Math.cos(radDegree)));
                         }
-                    }else{
-                        if(Flota[i].getX() > 500 && Flota[i].getY() >= 955){
-                            Flota[i].setX(Flota[i].getX() - Flota[i].getSpeed());                        
+                    }else{  //drugi pas
+                        if(Flota[i].getX() > 650 && Flota[i].getY() >= 826){
+                            Flota[i].setX(Flota[i].getX() - Flota[i].getSpeed());
                         }
                     } 
                 }
@@ -68,13 +71,15 @@ public class AirPort extends JFrame{
         private boolean     lane;
         private boolean     position;
         private int         speed;
+        private boolean     collision;
         
         public plane(int x, int y, boolean iLane){
             wsp[0] =    x;
             wsp[1] =    y;
             lane =      iLane;
-            position =  true; //w powietrzu
-            degree =    0;
+            position =  true;   //w powietrzu
+            degree =    0;      //do zmian pasa i ladowania //zalezne od lane - do zrobienia
+            collision = false;  //czy zderzenie
         }
         
         //Sprawdzanie     
@@ -96,6 +101,9 @@ public class AirPort extends JFrame{
             public double   getDegree(){
                 return degree;
             }
+            public boolean  getCollision(){
+                return collision;
+            }
         //Ustawianie
             public void     setX(int iX){
                 wsp[0] = iX;
@@ -114,6 +122,9 @@ public class AirPort extends JFrame{
             }
             public void     setDegree(double iDegree){
                 degree = iDegree;
+            }
+            public void     setCollision( boolean iCollision){
+                collision = iCollision;
             }
     }
 
