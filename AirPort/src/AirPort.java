@@ -43,21 +43,25 @@ public class AirPort extends JFrame{
                     }                           //sprawdzić drogi czy nie wypada z wyjątków
                     
                     if(Flota[i].getLane()){
-                        if(Flota[i].getX() >= 800 && Flota[i].getY() >= 650){
+                        if(Flota[i].getX() >= 600 && Flota[i].getY() >= 460){
                             Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());
                             
-                        }else if(Flota[i].getX() > 800 && Flota[i].getY() < 650 && Flota[i].getY() > 500 && Flota[i].getDegree() <= 90 ){
-                            Flota[i].setDegree(Flota[i].getDegree() + (1 * Flota[i].getSpeed()));
+                        }else if(Flota[i].getX() > 600 && Flota[i].getY() < 460 && Flota[i].getY() > 350 && Flota[i].getDegree() <= 90 ){
+                            Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
                             radDegree = (Math.PI * Flota[i].getDegree())/180;
-                            //  NIE MAM NA TO SIŁY
-                            Flota[i].setX((int) (901d - radius * Math.sin(radDegree)));
-                            Flota[i].setY((int) (749d - radius * Math.cos(radDegree)));
+                            Flota[i].setX((int) (600d + radius * Math.cos(radDegree)));
+                            Flota[i].setY((int) (460d - radius * Math.sin(radDegree)));
                         }else if(Flota[i].getX() > 200 && Flota[i].getX() < 800 && Flota[i].getY() > 2 ){
                             
                         }
                     }else{  //drugi pas
-                        if(Flota[i].getX() > 650 && Flota[i].getY() >= 826){
+                        if(Flota[i].getX() >= 460 && Flota[i].getY() >= 600){
                             Flota[i].setX(Flota[i].getX() - Flota[i].getSpeed());
+                        }else if(Flota[i].getY() > 600 && Flota[i].getX() < 460 && Flota[i].getX() > 350 && Flota[i].getDegree() <= 90){
+                            Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
+                            radDegree = (Math.PI * Flota[i].getDegree())/180;
+                            Flota[i].setX((int) (460d - radius * Math.sin(radDegree)));
+                            Flota[i].setY((int) (600d + radius * Math.cos(radDegree)));
                         }
                     } 
                 }
@@ -134,7 +138,7 @@ public class AirPort extends JFrame{
     AirPort(){
         //Okno
         super("Kontroler Lotów");
-        setBounds(10, 10, 1000, 1026);
+        setBounds(10, 10, 800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
@@ -152,9 +156,9 @@ public class AirPort extends JFrame{
             Random rand = new Random();            
             int iRand = 50 * (rand.nextInt(5)+1);
                 if(iLane){
-                    Flota[i] = new plane(950, 955 + i * iRand * level, iLane);
+                    Flota[i] = new plane(700, 800 + i * iRand * level, iLane);
                 }else{
-                    Flota[i] = new plane(950 + i * iRand * level, 955, iLane);
+                    Flota[i] = new plane(800 + i * iRand * level, 700, iLane);
                 }
         System.out.println("Samolot nr" + i + " [" + Flota[i].getX() + "," + Flota[i].getY() + "] " + Flota[i].getLane());    
         }
@@ -173,7 +177,23 @@ public class AirPort extends JFrame{
             //Jeśli zaczęto grę rysowanie lotniska
             g2D.drawImage(lotnisko, 0,  26, null);   // Nie wiem dlaczego ale obcina 26px z góry.
             for(int i = 0; i < 6; i++ ){
-                g2D.drawImage(samolot,  Flota[i].getX(),  Flota[i].getY() + 26, null);    // Trzeba zawsze dodać 26 do wsp y.
+                g2D.rotate(0,Flota[i].getX() + 15,  Flota[i].getY() + 26 + 15);
+//                if(Flota[i].getLane()){
+//                    if(Flota[i].getX() >= 600 && Flota[i].getY() >= 460){
+//                       g2D.rotate(Math.PI/2, Flota[i].getX() + 15,  Flota[i].getY() + 26 + 15);
+//                    }else if(Flota[i].getX() > 600 && Flota[i].getY() < 460 && Flota[i].getY() > 350 && Flota[i].getDegree() <= 90 ){
+//                       g2D.rotate((Math.PI * Flota[i].getDegree())/180, Flota[i].getX() + 15,  Flota[i].getY() + 26 + 15);
+//                    }
+//                }else{  //drugi pas
+//                    if(Flota[i].getX() >= 460 && Flota[i].getY() >= 600){
+//                        g2D.rotate(0,Flota[i].getX() + 15,  Flota[i].getY() + 26 + 15);
+//                        //g2D.drawImage(samolot,  Flota[i].getX(),  Flota[i].getY() + 26, null); 
+//                    }else if(Flota[i].getY() > 600 && Flota[i].getX() < 460 && Flota[i].getX() > 350 && Flota[i].getDegree() <= 90){
+//                        g2D.rotate((Math.PI * Flota[i].getDegree())/180, Flota[i].getX() + 15,  Flota[i].getY() + 26 + 15);
+//                        //g2D.drawImage(samolot,  Flota[i].getX(),  Flota[i].getY() + 26, null); 
+//                    }
+//                } 
+                g2D.drawImage(samolot,  Flota[i].getX(),  Flota[i].getY() + 26, null); 
             }
         }else{
             //Rysowanie menu
