@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
 import java.util.Random;
 import java.util.Timer;
@@ -20,7 +22,7 @@ public class AirPort extends JFrame{
     private Image lotnisko;
     private Image samolot;
     
-    private boolean start       = true;   // zmienić na false   //wprowadzić zmiane
+    private boolean start       = false;   // zmienić na false   //wprowadzić zmiane
     private int     level       = 1;      //wprowadzić zmiane
     private final   plane[] Flota;
     private double  radDegree   = 0;
@@ -43,16 +45,20 @@ public class AirPort extends JFrame{
                     }                           //sprawdzić drogi czy nie wypada z wyjątków
                     
                     if(Flota[i].getLane()){
-                        if(Flota[i].getX() >= 600 && Flota[i].getY() >= 460){
-                            Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());
-                            
-                        }else if(Flota[i].getX() > 600 && Flota[i].getY() < 460 && Flota[i].getY() > 350 && Flota[i].getDegree() <= 90 ){
-                            Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
-                            radDegree = (Math.PI * Flota[i].getDegree())/180;
-                            Flota[i].setX((int) (600d + radius * Math.cos(radDegree)));
-                            Flota[i].setY((int) (460d - radius * Math.sin(radDegree)));
-                        }else if(Flota[i].getX() > 200 && Flota[i].getX() < 800 && Flota[i].getY() > 2 ){
-                            
+                        if(Flota[i].getlaneChange() == false){
+                            if(Flota[i].getX() >= 600 && Flota[i].getY() >= 460){
+                                Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());
+
+                            }else if(Flota[i].getX() > 600 && Flota[i].getY() < 460 && Flota[i].getY() > 350 && Flota[i].getDegree() <= 90 ){
+                                Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
+                                radDegree = (Math.PI * Flota[i].getDegree())/180;
+                                Flota[i].setX((int) (600d + radius * Math.cos(radDegree)));
+                                Flota[i].setY((int) (460d - radius * Math.sin(radDegree)));
+                            }else if(Flota[i].getX() > 200 && Flota[i].getX() < 800 && Flota[i].getY() > 2 ){
+
+                            }
+                        } else {
+                                
                         }
                     }else{  //drugi pas
                         if(Flota[i].getX() >= 460 && Flota[i].getY() >= 600){
@@ -79,6 +85,7 @@ public class AirPort extends JFrame{
         private boolean     position;
         private int         speed;
         private boolean     collision;
+        private boolean     laneChange;
         
         public plane(int x, int y, boolean iLane){
             wsp[0] =    x;
@@ -111,6 +118,9 @@ public class AirPort extends JFrame{
             public boolean  getCollision(){
                 return collision;
             }
+            public boolean  getlaneChange(){
+                return laneChange;
+            }
         //Ustawianie
             public void     setX(int iX){
                 wsp[0] = iX;
@@ -132,6 +142,9 @@ public class AirPort extends JFrame{
             }
             public void     setCollision( boolean iCollision){
                 collision = iCollision;
+            }
+            public void     setlaneChange(boolean ilaneChange){
+                laneChange = ilaneChange;
             }
     }
 
@@ -194,10 +207,25 @@ public class AirPort extends JFrame{
 //                    }
 //                } 
                 g2D.drawImage(samolot,  Flota[i].getX(),  Flota[i].getY() + 26, null); 
+                addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {    
+                    int place = e.getX();
+                 //   if(place > Flota[i].getX());
+                }
+            });
             }
         }else{
             //Rysowanie menu
-            g2D.drawImage(menu, 0,  26, null);      // Nie wiem dlaczego ale obcina 26px z góry.
+            g2D.drawImage(menu, 0,  26, null); 
+            addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mouseClicked(MouseEvent e) {                   
+                    if(e.getX() > 574 && e.getX() < 766 && e.getY() < 775 && e.getY() > 651)
+                        start = true;
+                }
+            });
         }
         
         g2D.dispose();
