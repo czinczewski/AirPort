@@ -21,17 +21,14 @@ public class AirPort extends JFrame{
     private Image menu;
     private Image lotnisko;
     private Image samolot;
-    
-    private boolean start       = false;   // zmienić na false   //wprowadzić zmiane
-    private int     level       = 1;      //wprowadzić zmiane
-    private final   plane[] Flota;
-    private double  radDegree   = 0;
-    private int     radius      = 100;
-    private int     radius2      = 50;
-        
     private Timer zegar;
-    
-
+    private boolean start       = false;   // zmienić na false   //wprowadzić zmiane
+    private int     level       =   1;      //wprowadzić zmiane
+    private final   plane[] Flota;
+    private double  radDegree   =   0;
+    private int     radius      = 100;
+    private int     radius2     =  50;
+        
     
     class Dzialanie extends TimerTask{
         public void run(){
@@ -49,11 +46,11 @@ public class AirPort extends JFrame{
                         if(Flota[i].getlaneChange() == false){ //be zmiany pasa
                             if(Flota[i].getX() >= 600 && Flota[i].getY() >= 460){
                                 Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());
-                                //Test
-                                    if(Flota[i].getY() == 500 ){
-                                        Flota[i].setlaneChange(true);
-                                    }
-                                //Koniec testu
+//                                //Test
+//                                    if(Flota[i].getY() == 500 ){
+//                                        Flota[i].setlaneChange(true);
+//                                    }
+//                                //Koniec testu
                             }else if(Flota[i].getX() >= 600 && Flota[i].getY() <= 460 && Flota[i].getY() >= 360 && Flota[i].getDegree() < 90 ){
                                 Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
                                 radDegree = (Math.PI * Flota[i].getDegree())/180;
@@ -73,8 +70,7 @@ public class AirPort extends JFrame{
                                 Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
                                 radDegree = (Math.PI * Flota[i].getDegree())/180;
                                 Flota[i].setX((int) (650d + radius2 * Math.cos(radDegree)));
-                                Flota[i].setY((int) (500d - radius2 * Math.sin(radDegree))); // zmienne 500d - zrobić
-
+                                Flota[i].setY((int) (500d - radius2 * Math.sin(radDegree))); // zmienne 500d - zrobić - POBRANE Z KLIKNIECIE MYSZKĄ
                             }else if(Flota[i].getX() == 600 && Flota[i].getY() <= 650){
                                 if(Flota[i].getX() == 600 ){
                                     Flota[i].setDegree(0d);
@@ -85,13 +81,12 @@ public class AirPort extends JFrame{
                                 radDegree = (Math.PI * Flota[i].getDegree())/180;
                                 Flota[i].setX((int) (550d + radius2 * Math.cos(radDegree)));
                                 Flota[i].setY((int) (650d + radius2 * Math.sin(radDegree)));
-                            }else if(Flota[i].getDegree() == 90){
-                                //Nie wiem czemu nie przeskakuje do warunków drugiego toru.
+                            }else if(Flota[i].getY() >= 650 && Flota[i].getDegree() == 90){
                                 Flota[i].setY(700);
                                 Flota[i].setX(550);
                                 Flota[i].setlaneChange(false);
-                                Flota[i].setLane(false);
-                                System.out.println("Zmieniłem pas. X: " + Flota[i].getX() + " Y: " + Flota[i].getY());
+                                Flota[i].setLane(false);    //NIE DZIAŁA PRZYPISANIE FALSE ?!
+                                System.out.println("Samolot nr" + i + " [" + Flota[i].getX() + ", " + Flota[i].getY() + "] Lane: " + Flota[i].getLane() + " ChLane: " + Flota[i].getlaneChange());
                             }
                         }
                     }else{  //wylot poziomy
@@ -113,7 +108,7 @@ public class AirPort extends JFrame{
                                 }
                             }
                         }else{ //zmiana pasa
-                            
+                            // ZROBIĆ !!!!
                         }
                     } 
                 }
@@ -143,7 +138,7 @@ public class AirPort extends JFrame{
             collision = false;  //czy zderzenie
         }
         
-        //Sprawdzanie     
+    //Sprawdzanie     
         public int      getX(){
             return wsp[0];
         }        
@@ -175,12 +170,12 @@ public class AirPort extends JFrame{
         public void     setY(int iY){
             wsp[1] = iY;
         }
+        public void     changeLane(boolean aLane){
+            lane = aLane;
+        }        
         public void     setLane(boolean ilaneChange){
             laneChange = ilaneChange;
         }
-        public void     changeLane( boolean iLane){
-            lane = iLane;
-        }        
         public void     changePosition( boolean iPosition){
             position = iPosition;
         }
@@ -207,9 +202,9 @@ public class AirPort extends JFrame{
         setVisible(true);
         createBufferStrategy(2);
 
-        menu = new ImageIcon("Obrazki/menu.png").getImage();
-        lotnisko = new ImageIcon("Obrazki/lotnisko.png").getImage();
-        samolot = new ImageIcon("Obrazki/samolot.png").getImage();      
+        menu =      new ImageIcon("Obrazki/menu.png").getImage();
+        lotnisko =  new ImageIcon("Obrazki/lotnisko.png").getImage();
+        samolot =   new ImageIcon("Obrazki/samolot.png").getImage();      
         
 
         Flota = new plane[6];
@@ -238,7 +233,7 @@ public class AirPort extends JFrame{
             //Jeśli zaczęto grę rysowanie lotniska
             g2D.drawImage(lotnisko, 0,  26, null);   // Nie wiem dlaczego ale obcina 26px z góry.
             for(int i = 0; i < 6; i++ ){
-                g2D.rotate(0,Flota[i].getX() + 15,  Flota[i].getY() + 26 + 15);
+                //g2D.rotate(0,Flota[i].getX() + 15,  Flota[i].getY() + 26 + 15);
 //                if(Flota[i].getLane()){
 //                    if(Flota[i].getX() >= 600 && Flota[i].getY() >= 460){
 //                       g2D.rotate(Math.PI/2, Flota[i].getX() + 15,  Flota[i].getY() + 26 + 15);
@@ -255,13 +250,14 @@ public class AirPort extends JFrame{
 //                    }
 //                } 
                 g2D.drawImage(samolot,  Flota[i].getX(),  Flota[i].getY() + 26, null); 
+                
                 addMouseListener(new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {    
-                    int place = e.getX();
-                 //   if(place > Flota[i].getX());
-                }
-            });
+                    @Override
+                    public void mousePressed(MouseEvent e) {    
+                        int place = e.getX();
+                    //   if(place > Flota[i].getX());
+                    }
+                });
             }
         }else{
             //Rysowanie menu
