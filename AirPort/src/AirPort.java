@@ -22,9 +22,11 @@ public class AirPort extends JFrame{
     private Image lotnisko;
     private Image samolot;
     private Timer zegar;
-    private boolean start       = false;   // zmienić na false   //wprowadzić zmiane
+    private boolean start       = false;    //zmienić na false   //wprowadzić zmiane
     private int     level       =   1;      //wprowadzić zmiane
     private final   plane[] Flota;
+    private final   plane[] horizontalParking = new plane[3];    //parking poziomy
+    private final   plane[] verticalParking   = new plane[3];    //parking pionowy
     private double  radDegree   =   0;
     private int     radius      = 100;
     private int     radius2     =  50;
@@ -46,27 +48,29 @@ public class AirPort extends JFrame{
                         if(Flota[i].getlaneChange() == false){ //be zmiany pasa
                             if(Flota[i].getX() >= 600 && Flota[i].getY() >= 460){
                                 Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());
-//                                //Test
-//                                    if(Flota[i].getY() == 500 ){
-//                                        Flota[i].setlaneChange(true);
-//                                    }
-//                                //Koniec testu
+                                if(Flota[i].getY() == 500 ){Flota[i].setlaneChange(true);}//Koniec testu
                             }else if(Flota[i].getX() >= 600 && Flota[i].getY() <= 460 && Flota[i].getY() >= 360 && Flota[i].getDegree() < 90 ){
                                 Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
                                 radDegree = (Math.PI * Flota[i].getDegree())/180;
                                 Flota[i].setX((int) (600d + radius * Math.cos(radDegree)));
                                 Flota[i].setY((int) (460d - radius * Math.sin(radDegree)));
-                            }else if(Flota[i].getX() < 600 && Flota[i].getX() > 115 && Flota[i].getY() <= 360 ){
+                            }else if(Flota[i].getX() <= 600 && Flota[i].getX() > 115 && Flota[i].getY() <= 360 ){
+                                Flota[i].changePosition(false); //już na ziemi
                                 Flota[i].setX(Flota[i].getX() - Flota[i].getSpeed());
-                            }else if(Flota[i].getX() <= 115 && Flota[i].getY() <=360 && Flota[i].getY() >= 300 && Flota[i].getDegree() < 180){
+                            }else if(Flota[i].getX() <= 115 && Flota[i].getY() <=360 && Flota[i].getY() >= 300 && Flota[i].getDegree() <= 180){
                                 Flota[i].setDegree(Flota[i].getDegree() + Flota[i].getSpeed());
                                 if(Flota[i].getDegree() >= 180){
                                     Flota[i].setDegree(180d);
                                     Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());                                    
                                 }
+                            }else if(Flota[i].getY() <= 300 && Flota[i].getY() >= 200){
+                                //wybór miejsca na parkingu poziomym
+                                //dojazd na miejsce parkingowe
+                                //przypisanie do miejsca na parkingu
                             }
-                        } else { //Po zmianie pasa
-                            if(Flota[i].getX() > 600){
+                        } else { //Po zmianie kliknieciu pasa
+                            //dodać if za nisko na ekranie - leć jeszcze prosto
+                            if(Flota[i].getX() > 600){ //dodać warunek na pozycje Y
                                 Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
                                 radDegree = (Math.PI * Flota[i].getDegree())/180;
                                 Flota[i].setX((int) (650d + radius2 * Math.cos(radDegree)));
@@ -85,7 +89,8 @@ public class AirPort extends JFrame{
                                 Flota[i].setY(700);
                                 Flota[i].setX(550);
                                 Flota[i].setlaneChange(false);
-                                Flota[i].setLane(false);    //NIE DZIAŁA PRZYPISANIE FALSE ?!
+                                Flota[i].setLane(false);
+                                Flota[i].setDegree(0);
                                 System.out.println("Samolot nr" + i + " [" + Flota[i].getX() + ", " + Flota[i].getY() + "] Lane: " + Flota[i].getLane() + " ChLane: " + Flota[i].getlaneChange());
                             }
                         }
@@ -174,7 +179,7 @@ public class AirPort extends JFrame{
             lane = aLane;
         }        
         public void     setLane(boolean ilaneChange){
-            laneChange = ilaneChange;
+            lane = ilaneChange;
         }
         public void     changePosition( boolean iPosition){
             position = iPosition;
