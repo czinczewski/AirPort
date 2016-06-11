@@ -13,7 +13,6 @@ import javax.swing.JFrame;
  * @author Damian Winczewski
  */
 public class AirPort extends JFrame{
-    
     public static void main(String[] args) {
         AirPort window = new AirPort();
         window.repaint();  
@@ -23,18 +22,20 @@ public class AirPort extends JFrame{
     private Image lotnisko;
     private Image airliner;
     private Timer timer;
-    private boolean start       = false;    //zmienić na false   //wprowadzić zmiane
-    private int     level       =   1;      //wprowadzić zmiane
+    private boolean start       = false;
+    private int     level       =   1;      //wprowadzić zmiane poziomów
     private plane[] Fleet;
     private int horizontalParking[];        //parking poziomy
     private int verticalParking[];          //parking pionowy
 //    private boolean naparkingu = true;    //dodać do klasy samolot
 //    private boolean parking = true;       //dodać do klasy samolot
-    private double  radDegree   =   0;
-    private int     radius      = 100;
-    private int     radius2     =  50;
+
     
     class Dzialanie extends TimerTask{
+        private double  radDegree   =   0;
+        private int     radius      = 100;
+        private int     radius2     =  50;
+        @Override
         public void run(){
             if(start){
                 for(int i = 0; i < 6; i++){
@@ -47,7 +48,7 @@ public class AirPort extends JFrame{
                     }                           //sprawdzić drogi czy nie wypada z wyjątków
                     
                     if(Fleet[i].getLane()){ //wylot pionowy 
-                        if(!Fleet[i].ifChange()){ //bez zmiany pasa
+                        if(!Fleet[i].getlaneChange()){ //bez zmiany pasa
                             if(Fleet[i].getX() >= 600 && Fleet[i].getY() >= 460){
                                 Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
                             }else if(Fleet[i].getX() >= 600 && Fleet[i].getY() <= 460 && Fleet[i].getY() >= 360 && Fleet[i].getDegree() < 90 ){
@@ -64,7 +65,7 @@ public class AirPort extends JFrame{
                                     Fleet[i].setDegree(180d);
                                     Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());                                    
                                 }
-                            }else if(Fleet[i].getY() <= 300 && Fleet[i].getY() >= 200){
+                            }else if(Fleet[i].getY() <= 300 && Fleet[i].getY() >= 200){ //PARKOWANIE
 //                                for(int j = 0; j < 3; j++){
 //                                    if( horizontalParking[j] != i){
 //                                        parking = false;
@@ -97,8 +98,11 @@ public class AirPort extends JFrame{
 
                             }
                         } else { //Po zmianie kliknieciu pasa
-                            //dodać if za nisko na ekranie - leć jeszcze prosto
-                            if(Fleet[i].getX() > 600){ //dodać warunek na pozycje Y
+                            if(Fleet[i].getY() >= 600 && Fleet[i].getX() >= 700){
+                                Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
+                                Fleet[i].setxChange(700);
+                                Fleet[i].setyChange(600);
+                            }else if(Fleet[i].getX() > 600){ //dodać warunek na pozycje Y
                                 Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
                                 radDegree = (Math.PI * Fleet[i].getDegree())/180;
                                 Fleet[i].setX((int) (650d + radius2 * Math.cos(radDegree)));
@@ -119,11 +123,10 @@ public class AirPort extends JFrame{
                                 Fleet[i].setlaneChange(false);
                                 Fleet[i].setLane(false);
                                 Fleet[i].setDegree(0);
-                                //System.out.println("Samolot nr" + i + " [" + Flota[i].getX() + ", " + Flota[i].getY() + "] Lane: " + Flota[i].getLane() + " ChLane: " + Flota[i].getlaneChange());
                             }
                         }
                     }else{  //wylot poziomy
-                        if(Fleet[i].ifChange() == false){ //be zmiany pasa
+                        if(Fleet[i].getlaneChange() == false){ //be zmiany pasa
                             if(Fleet[i].getX() >= 460 && Fleet[i].getY() >= 600){
                                 Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());                                
                             }else if(Fleet[i].getY() >= 600 && Fleet[i].getX() <= 460 && Fleet[i].getX() >= 360 && Fleet[i].getDegree() <= 90){
@@ -141,8 +144,11 @@ public class AirPort extends JFrame{
                                 }
                             }
                         }else{ //zmiana pasa
-                            //dodać if za nisko na ekranie - leć jeszcze prosto
-                            if(Fleet[i].getY() > 600){ 
+                            if(Fleet[i].getX() >= 600 && Fleet[i].getY() >= 700){
+                                Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());
+                                Fleet[i].setxChange(600);
+                                Fleet[i].setyChange(700);
+                            }else if(Fleet[i].getY() > 600){ 
                                 Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
                                 radDegree = (Math.PI * Fleet[i].getDegree())/180;
                                 Fleet[i].setX((int) (Fleet[i].getxChanege() - radius2 * Math.sin(radDegree)));
@@ -163,10 +169,19 @@ public class AirPort extends JFrame{
                                 Fleet[i].setlaneChange(false);
                                 Fleet[i].setLane(true);
                                 Fleet[i].setDegree(0);
-                                System.out.println("Samolot nr" + i + " [" + Fleet[i].getX() + ", " + Fleet[i].getY() + "] Lane: " + Fleet[i].getLane() + " ChLane: " + Fleet[i].ifChange());
                             }
                         }
                     } 
+                }
+                for(int j = 0; j < Fleet.length; j++){
+                    for(int k = 0; k < Fleet.length; k++){
+                        if(Fleet[j].getPosition() && Fleet[k].getPosition()){
+                            if(Fleet[j].getX() >= Fleet[k].getX() && Fleet[j].getX() <= (Fleet[k].getX() + 30)){ //jeszcze warunki na Y
+                                Fleet[j].setCollision(true);
+                                Fleet[k].setCollision(true);
+                            }
+                        }
+                    }
                 }
             }
         repaint();
@@ -178,7 +193,7 @@ public class AirPort extends JFrame{
         private double      degree;     //kąt skretu        
         private boolean     lane;       //trasa wlotu
         private boolean     laneChange; //zmiana trasy
-        private boolean     position;
+        private boolean     position;   //czy wylądował
         private int         speed;
         private boolean     collision;
         private int         xChange;
@@ -224,7 +239,7 @@ public class AirPort extends JFrame{
         public boolean  getCollision(){
             return collision;
         }
-        public boolean  ifChange(){
+        public boolean  getlaneChange(){
             return laneChange;
         }
     //Ustawianie
@@ -340,6 +355,8 @@ public class AirPort extends JFrame{
 //                    }
 //                } 
                 g2D.drawImage(airliner,  Fleet[i].getX(),  Fleet[i].getY() + 26, null); 
+                Color pedzel = new Color(255,0,0); g2D.setColor(pedzel);
+                g2D.drawOval(Fleet[i].getX(),Fleet[i].getY() +26,30,30);
             }
 
             addMouseListener(new MouseAdapter() {
@@ -347,10 +364,11 @@ public class AirPort extends JFrame{
                 public void mousePressed(MouseEvent e) {    
                    for(int i = 0; i < Fleet.length; i++){
                         if((e.getX() -31) <= Fleet[i].getX() && e.getX() >= Fleet[i].getX() && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26)){
-                            Fleet[i].setlaneChange(true);
+                            Fleet[i].setlaneChange(true);   // nie wiadomo dlaczego wchodzi w pętle wielokrotnie //docelowo zamiast TRUE ma być Fleet[i].getlaneChange()
+                                                            // przepisać e.getX i e.getY do INT i po spełnieniu if zerować.
                             Fleet[i].setxChange(Fleet[i].getX());
                             Fleet[i].setyChange(Fleet[i].getY());
-                            System.out.println("Kliknięto");
+                            System.out.println("Nr" + i + " " + Fleet[i].getlaneChange());
                         }                           
                    }
                 }
