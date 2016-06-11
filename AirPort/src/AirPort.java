@@ -18,12 +18,16 @@ public class AirPort extends JFrame{
         window.repaint();  
     }
     
-    private Image menu;
-    private Image lotnisko;
-    private Image airliner;
+    private Image Menu;
+    private Image GameOver;
+    private Image Lotnisko;
+    private Image Airliner;
+    
     private Timer timer;
     private boolean start       = false;
+    private boolean gameover    = false;
     private int     level       =   1;      //wprowadzić zmiane poziomów
+    
     private plane[] Fleet;
     private int horizontalParking[];        //parking poziomy
     private int verticalParking[];          //parking pionowy
@@ -57,7 +61,7 @@ public class AirPort extends JFrame{
                                 Fleet[i].setX((int) (600d + radius * Math.cos(radDegree)));
                                 Fleet[i].setY((int) (460d - radius * Math.sin(radDegree)));
                             }else if(Fleet[i].getX() <= 600 && Fleet[i].getX() > 115 && Fleet[i].getY() <= 360 ){
-                                Fleet[i].changePosition(false); //wylondowałem
+                                Fleet[i].changePosition(true); //wylądowałem
                                 Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());
                             }else if(Fleet[i].getX() <= 115 && Fleet[i].getY() <=360 && Fleet[i].getY() >= 300 && Fleet[i].getDegree() <= 180){
                                 Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
@@ -135,6 +139,7 @@ public class AirPort extends JFrame{
                                 Fleet[i].setX((int) (460d - radius * Math.sin(radDegree)));
                                 Fleet[i].setY((int) (600d + radius * Math.cos(radDegree)));
                             }else if(Fleet[i].getY() < 600 && Fleet[i].getY() > 115 && Fleet[i].getX() <= 360 ){
+                                Fleet[i].changePosition(true); //wylądowałem
                                 Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
                             }else if(Fleet[i].getY() <= 115 && Fleet[i].getX() <= 360 && Fleet[i].getX() >= 300 && Fleet[i].getDegree() <= 180){
                                 Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
@@ -175,10 +180,15 @@ public class AirPort extends JFrame{
                 }
                 for(int j = 0; j < Fleet.length; j++){
                     for(int k = 0; k < Fleet.length; k++){
-                        if(Fleet[j].getPosition() && Fleet[k].getPosition()){
-                            if(Fleet[j].getX() >= Fleet[k].getX() && Fleet[j].getX() <= (Fleet[k].getX() + 30)){ //jeszcze warunki na Y
+                        if(Fleet[j].getPosition() && Fleet[k].getPosition() && !Fleet[k].getCollision() && j != k){
+                            if(Fleet[j].getX() >= Fleet[k].getX() && Fleet[j].getX() <= (Fleet[k].getX() + 30) && Fleet[j].getY() >= Fleet[k].getY() && Fleet[j].getY() <= (Fleet[k].getY() + 30 )){
                                 Fleet[j].setCollision(true);
                                 Fleet[k].setCollision(true);
+                                    System.out.println("Nr " + j + " zderzenie z nr " + k);
+                                    System.out.println("[" +Fleet[j].getX() + "," + Fleet[j].getY() + "]   [" +Fleet[k].getX() + "," + Fleet[k].getY() + "]" );
+                                    gameover = true;
+                                    start = false;
+                                    newFlota();
                             }
                         }
                     }
@@ -203,7 +213,7 @@ public class AirPort extends JFrame{
             wsp[0] =    x;
             wsp[1] =    y;
             lane =      iLane;      //pas na którym się znajduje
-            position =  true;       //w powietrzu
+            position =  false;      //czy wylądował
             xChange = 0;            //współrzędne do zawracania
             yChange = 0;            //współrzędne do zawracania
             laneChange = false;
@@ -316,9 +326,10 @@ public class AirPort extends JFrame{
             }
     }
     public void loadImages(){
-        menu =      new ImageIcon("Obrazki/menu.png").getImage();
-        lotnisko =  new ImageIcon("Obrazki/lotnisko.png").getImage();
-        airliner =   new ImageIcon("Obrazki/samolot.png").getImage();
+        Menu =      new ImageIcon("Obrazki/menu.png").getImage();
+        GameOver =  new ImageIcon("Obrazki/gameover.png").getImage();
+        Lotnisko =  new ImageIcon("Obrazki/lotnisko.png").getImage();
+        Airliner =  new ImageIcon("Obrazki/samolot.png").getImage();
     }
     
     @Override
@@ -327,16 +338,28 @@ public class AirPort extends JFrame{
         Graphics2D g2D = (Graphics2D) bstrategy.getDrawGraphics();
         
         if(!start){//Rysowanie menu
-            g2D.drawImage(menu, 0,  26, null);      // Obcina 26px z góry.
-            addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if(e.getX() > 574 && e.getX() < 766 && e.getY() < 775 && e.getY() > 651)
-                        start = true;
-                }
-            });
+            if(!gameover){
+                g2D.drawImage(Menu, 0,  26, null);      // Obcina 26px z góry.
+                addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if(e.getX() > 574 && e.getX() < 766 && e.getY() < 775 && e.getY() > 651)
+                            start = true;
+                    }
+                });
+            }else{
+                g2D.drawImage(GameOver, 0,  26, null);      // Obcina 26px z góry.
+                addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if(e.getX() > 574 && e.getX() < 766 && e.getY() < 775 && e.getY() > 651)
+                            gameover = false;
+                            start = true;
+                    }
+                });
+            }
         }else{//Start gry
-            g2D.drawImage(lotnisko, 0,  26, null);   // Obcina 26px z góry.
+            g2D.drawImage(Lotnisko, 0,  26, null);   // Obcina 26px z góry.
             for(int i = 0; i < Fleet.length; i++ ){
 //                g2D.rotate(0,Flota[i].getX() + 15,  Flota[i].getY() + 26 + 15);
 //                if(Flota[i].getLane()){
@@ -354,7 +377,7 @@ public class AirPort extends JFrame{
 //                        //g2D.drawImage(samolot,  Flota[i].getX(),  Flota[i].getY() + 26, null); 
 //                    }
 //                } 
-                g2D.drawImage(airliner,  Fleet[i].getX(),  Fleet[i].getY() + 26, null); 
+                g2D.drawImage(Airliner,  Fleet[i].getX(),  Fleet[i].getY() + 26, null); 
                 Color pedzel = new Color(255,0,0); g2D.setColor(pedzel);
                 g2D.drawOval(Fleet[i].getX(),Fleet[i].getY() +26,30,30);
             }
@@ -363,12 +386,12 @@ public class AirPort extends JFrame{
                 @Override
                 public void mousePressed(MouseEvent e) {    
                    for(int i = 0; i < Fleet.length; i++){
-                        if((e.getX() -31) <= Fleet[i].getX() && e.getX() >= Fleet[i].getX() && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26)){
-                            Fleet[i].setlaneChange(true);   // nie wiadomo dlaczego wchodzi w pętle wielokrotnie //docelowo zamiast TRUE ma być Fleet[i].getlaneChange()
-                                                            // przepisać e.getX i e.getY do INT i po spełnieniu if zerować.
-                            Fleet[i].setxChange(Fleet[i].getX());
-                            Fleet[i].setyChange(Fleet[i].getY());
-                            System.out.println("Nr" + i + " " + Fleet[i].getlaneChange());
+                        if((e.getX() -31) <= Fleet[i].getX() && e.getX()>= Fleet[i].getX() && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26)){
+                            if(!Fleet[i].getlaneChange()){    
+                                Fleet[i].setlaneChange(!Fleet[i].getlaneChange());
+                                Fleet[i].setxChange(Fleet[i].getX());
+                                Fleet[i].setyChange(Fleet[i].getY());
+                            }
                         }                           
                    }
                 }
