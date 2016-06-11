@@ -21,15 +21,15 @@ public class AirPort extends JFrame{
     
     private Image menu;
     private Image lotnisko;
-    private Image samolot;
-    private Timer zegar;
+    private Image airliner;
+    private Timer timer;
     private boolean start       = false;    //zmienić na false   //wprowadzić zmiane
     private int     level       =   1;      //wprowadzić zmiane
-    private final   plane[] Flota;
+    private plane[] Fleet;
     private int horizontalParking[];        //parking poziomy
     private int verticalParking[];          //parking pionowy
-    private boolean naparkingu = true;
-    private boolean parking = true;
+//    private boolean naparkingu = true;    //dodać do klasy samolot
+//    private boolean parking = true;       //dodać do klasy samolot
     private double  radDegree   =   0;
     private int     radius      = 100;
     private int     radius2     =  50;
@@ -39,32 +39,32 @@ public class AirPort extends JFrame{
             if(start){
                 for(int i = 0; i < 6; i++){
                     if(level <= 1){
-                        Flota[i].setSpeed(1);
+                        Fleet[i].setSpeed(1);
                     }else if(level == 2){
-                        Flota[i].setSpeed(2);
+                        Fleet[i].setSpeed(2);
                     }else if(level >= 3){      //poziom nie do przejścia
-                        Flota[i].setSpeed(4);   //prawdopodobnie trzba mocno zwiększyć prędkość
+                        Fleet[i].setSpeed(4);   //prawdopodobnie trzba mocno zwiększyć prędkość
                     }                           //sprawdzić drogi czy nie wypada z wyjątków
                     
-                    if(Flota[i].getLane()){ //wylot pionowy 
-                        if(!Flota[i].ifChange()){ //bez zmiany pasa
-                            if(Flota[i].getX() >= 600 && Flota[i].getY() >= 460){
-                                Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());
-                            }else if(Flota[i].getX() >= 600 && Flota[i].getY() <= 460 && Flota[i].getY() >= 360 && Flota[i].getDegree() < 90 ){
-                                Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
-                                radDegree = (Math.PI * Flota[i].getDegree())/180;
-                                Flota[i].setX((int) (600d + radius * Math.cos(radDegree)));
-                                Flota[i].setY((int) (460d - radius * Math.sin(radDegree)));
-                            }else if(Flota[i].getX() <= 600 && Flota[i].getX() > 115 && Flota[i].getY() <= 360 ){
-                                Flota[i].changePosition(false); //wylondowałem
-                                Flota[i].setX(Flota[i].getX() - Flota[i].getSpeed());
-                            }else if(Flota[i].getX() <= 115 && Flota[i].getY() <=360 && Flota[i].getY() >= 300 && Flota[i].getDegree() <= 180){
-                                Flota[i].setDegree(Flota[i].getDegree() + Flota[i].getSpeed());
-                                if(Flota[i].getDegree() >= 180){
-                                    Flota[i].setDegree(180d);
-                                    Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());                                    
+                    if(Fleet[i].getLane()){ //wylot pionowy 
+                        if(!Fleet[i].ifChange()){ //bez zmiany pasa
+                            if(Fleet[i].getX() >= 600 && Fleet[i].getY() >= 460){
+                                Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
+                            }else if(Fleet[i].getX() >= 600 && Fleet[i].getY() <= 460 && Fleet[i].getY() >= 360 && Fleet[i].getDegree() < 90 ){
+                                Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
+                                radDegree = (Math.PI * Fleet[i].getDegree())/180;
+                                Fleet[i].setX((int) (600d + radius * Math.cos(radDegree)));
+                                Fleet[i].setY((int) (460d - radius * Math.sin(radDegree)));
+                            }else if(Fleet[i].getX() <= 600 && Fleet[i].getX() > 115 && Fleet[i].getY() <= 360 ){
+                                Fleet[i].changePosition(false); //wylondowałem
+                                Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());
+                            }else if(Fleet[i].getX() <= 115 && Fleet[i].getY() <=360 && Fleet[i].getY() >= 300 && Fleet[i].getDegree() <= 180){
+                                Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
+                                if(Fleet[i].getDegree() >= 180){
+                                    Fleet[i].setDegree(180d);
+                                    Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());                                    
                                 }
-                            }else if(Flota[i].getY() <= 300 && Flota[i].getY() >= 200){
+                            }else if(Fleet[i].getY() <= 300 && Fleet[i].getY() >= 200){
 //                                for(int j = 0; j < 3; j++){
 //                                    if( horizontalParking[j] != i){
 //                                        parking = false;
@@ -98,72 +98,72 @@ public class AirPort extends JFrame{
                             }
                         } else { //Po zmianie kliknieciu pasa
                             //dodać if za nisko na ekranie - leć jeszcze prosto
-                            if(Flota[i].getX() > 600){ //dodać warunek na pozycje Y
-                                Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
-                                radDegree = (Math.PI * Flota[i].getDegree())/180;
-                                Flota[i].setX((int) (650d + radius2 * Math.cos(radDegree)));
-                                Flota[i].setY((int) (Flota[i].getyChanege() - radius2 * Math.sin(radDegree)));
-                            }else if(Flota[i].getX() == 600 && Flota[i].getY() <= 650){
-                                if(Flota[i].getX() == 600 ){
-                                    Flota[i].setDegree(0d);
+                            if(Fleet[i].getX() > 600){ //dodać warunek na pozycje Y
+                                Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
+                                radDegree = (Math.PI * Fleet[i].getDegree())/180;
+                                Fleet[i].setX((int) (650d + radius2 * Math.cos(radDegree)));
+                                Fleet[i].setY((int) (Fleet[i].getyChanege() - radius2 * Math.sin(radDegree)));
+                            }else if(Fleet[i].getX() == 600 && Fleet[i].getY() <= 650){
+                                if(Fleet[i].getX() == 600 ){
+                                    Fleet[i].setDegree(0d);
                                 }
-                                Flota[i].setY(Flota[i].getY() + Flota[i].getSpeed());
-                            }else if(Flota[i].getY() >= 650 && Flota[i].getX() <= 600 && Flota[i].getX() > 500 && Flota[i].getDegree() < 90){
-                                Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
-                                radDegree = (Math.PI * Flota[i].getDegree())/180;
-                                Flota[i].setX((int) (550d + radius2 * Math.cos(radDegree)));
-                                Flota[i].setY((int) (650d + radius2 * Math.sin(radDegree)));
-                            }else if(Flota[i].getY() >= 650 && Flota[i].getDegree() == 90){
-                                Flota[i].setY(700);
-                                Flota[i].setX(550);
-                                Flota[i].setlaneChange(false);
-                                Flota[i].setLane(false);
-                                Flota[i].setDegree(0);
+                                Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
+                            }else if(Fleet[i].getY() >= 650 && Fleet[i].getX() <= 600 && Fleet[i].getX() > 500 && Fleet[i].getDegree() < 90){
+                                Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
+                                radDegree = (Math.PI * Fleet[i].getDegree())/180;
+                                Fleet[i].setX((int) (550d + radius2 * Math.cos(radDegree)));
+                                Fleet[i].setY((int) (650d + radius2 * Math.sin(radDegree)));
+                            }else if(Fleet[i].getY() >= 650 && Fleet[i].getDegree() == 90){
+                                Fleet[i].setY(700);
+                                Fleet[i].setX(550);
+                                Fleet[i].setlaneChange(false);
+                                Fleet[i].setLane(false);
+                                Fleet[i].setDegree(0);
                                 //System.out.println("Samolot nr" + i + " [" + Flota[i].getX() + ", " + Flota[i].getY() + "] Lane: " + Flota[i].getLane() + " ChLane: " + Flota[i].getlaneChange());
                             }
                         }
                     }else{  //wylot poziomy
-                        if(Flota[i].ifChange() == false){ //be zmiany pasa
-                            if(Flota[i].getX() >= 460 && Flota[i].getY() >= 600){
-                                Flota[i].setX(Flota[i].getX() - Flota[i].getSpeed());                                
-                            }else if(Flota[i].getY() >= 600 && Flota[i].getX() <= 460 && Flota[i].getX() >= 360 && Flota[i].getDegree() <= 90){
-                                Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
-                                radDegree = (Math.PI * Flota[i].getDegree())/180;
-                                Flota[i].setX((int) (460d - radius * Math.sin(radDegree)));
-                                Flota[i].setY((int) (600d + radius * Math.cos(radDegree)));
-                            }else if(Flota[i].getY() < 600 && Flota[i].getY() > 115 && Flota[i].getX() <= 360 ){
-                                Flota[i].setY(Flota[i].getY() - Flota[i].getSpeed());
-                            }else if(Flota[i].getY() <= 115 && Flota[i].getX() <= 360 && Flota[i].getX() >= 300 && Flota[i].getDegree() <= 180){
-                                Flota[i].setDegree(Flota[i].getDegree() + Flota[i].getSpeed());
-                                if(Flota[i].getDegree() >= 180){
-                                    Flota[i].setDegree(180d);
-                                    Flota[i].setX(Flota[i].getX() - Flota[i].getSpeed());                                    
+                        if(Fleet[i].ifChange() == false){ //be zmiany pasa
+                            if(Fleet[i].getX() >= 460 && Fleet[i].getY() >= 600){
+                                Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());                                
+                            }else if(Fleet[i].getY() >= 600 && Fleet[i].getX() <= 460 && Fleet[i].getX() >= 360 && Fleet[i].getDegree() <= 90){
+                                Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
+                                radDegree = (Math.PI * Fleet[i].getDegree())/180;
+                                Fleet[i].setX((int) (460d - radius * Math.sin(radDegree)));
+                                Fleet[i].setY((int) (600d + radius * Math.cos(radDegree)));
+                            }else if(Fleet[i].getY() < 600 && Fleet[i].getY() > 115 && Fleet[i].getX() <= 360 ){
+                                Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
+                            }else if(Fleet[i].getY() <= 115 && Fleet[i].getX() <= 360 && Fleet[i].getX() >= 300 && Fleet[i].getDegree() <= 180){
+                                Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
+                                if(Fleet[i].getDegree() >= 180){
+                                    Fleet[i].setDegree(180d);
+                                    Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());                                    
                                 }
                             }
                         }else{ //zmiana pasa
                             //dodać if za nisko na ekranie - leć jeszcze prosto
-                            if(Flota[i].getY() > 600){ 
-                                Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
-                                radDegree = (Math.PI * Flota[i].getDegree())/180;
-                                Flota[i].setX((int) (Flota[i].getxChanege() - radius2 * Math.sin(radDegree)));
-                                Flota[i].setY((int) (650d + radius2 * Math.cos(radDegree))); 
-                            }else if(Flota[i].getY() == 600 && Flota[i].getX() <= 650){
-                                if(Flota[i].getY() == 600 ){
-                                    Flota[i].setDegree(0d);
+                            if(Fleet[i].getY() > 600){ 
+                                Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
+                                radDegree = (Math.PI * Fleet[i].getDegree())/180;
+                                Fleet[i].setX((int) (Fleet[i].getxChanege() - radius2 * Math.sin(radDegree)));
+                                Fleet[i].setY((int) (650d + radius2 * Math.cos(radDegree))); 
+                            }else if(Fleet[i].getY() == 600 && Fleet[i].getX() <= 650){
+                                if(Fleet[i].getY() == 600 ){
+                                    Fleet[i].setDegree(0d);
                                 }
-                                Flota[i].setX(Flota[i].getX() + Flota[i].getSpeed());
-                            }else if(Flota[i].getX() >= 650 && Flota[i].getY() <= 600 && Flota[i].getY() > 500 && Flota[i].getDegree() < 90){
-                                Flota[i].setDegree(Flota[i].getDegree() + (Flota[i].getSpeed()));
-                                radDegree = (Math.PI * Flota[i].getDegree())/180;
-                                Flota[i].setX((int) (650d + radius2 * Math.sin(radDegree)));
-                                Flota[i].setY((int) (550d + radius2 * Math.cos(radDegree)));
-                            }else if(Flota[i].getX() >= 650 && Flota[i].getDegree() == 90){
-                                Flota[i].setY(550);
-                                Flota[i].setX(700);
-                                Flota[i].setlaneChange(false);
-                                Flota[i].setLane(true);
-                                Flota[i].setDegree(0);
-                                System.out.println("Samolot nr" + i + " [" + Flota[i].getX() + ", " + Flota[i].getY() + "] Lane: " + Flota[i].getLane() + " ChLane: " + Flota[i].ifChange());
+                                Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                            }else if(Fleet[i].getX() >= 650 && Fleet[i].getY() <= 600 && Fleet[i].getY() > 500 && Fleet[i].getDegree() < 90){
+                                Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
+                                radDegree = (Math.PI * Fleet[i].getDegree())/180;
+                                Fleet[i].setX((int) (650d + radius2 * Math.sin(radDegree)));
+                                Fleet[i].setY((int) (550d + radius2 * Math.cos(radDegree)));
+                            }else if(Fleet[i].getX() >= 650 && Fleet[i].getDegree() == 90){
+                                Fleet[i].setY(550);
+                                Fleet[i].setX(700);
+                                Fleet[i].setlaneChange(false);
+                                Fleet[i].setLane(true);
+                                Fleet[i].setDegree(0);
+                                System.out.println("Samolot nr" + i + " [" + Fleet[i].getX() + ", " + Fleet[i].getY() + "] Lane: " + Fleet[i].getLane() + " ChLane: " + Fleet[i].ifChange());
                             }
                         }
                     } 
@@ -269,46 +269,60 @@ public class AirPort extends JFrame{
         setVisible(true);
         createBufferStrategy(2);
 
-        menu =      new ImageIcon("Obrazki/menu.png").getImage();
-        lotnisko =  new ImageIcon("Obrazki/lotnisko.png").getImage();
-        samolot =   new ImageIcon("Obrazki/samolot.png").getImage();      
-        
-
-        Flota = new plane[6];
-        for(int i = 0; i < Flota.length; i++){
+        loadImages();
+        newFlota();
+        newParking();
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new Dzialanie(), 0, 20);   
+    }
+     
+    public void newFlota(){        
+        Fleet = new plane[6];
+        for(int i = 0; i < Fleet.length; i++){
             boolean iLane = Math.random() < 0.5;
             Random rand = new Random();            
             int iRand = 50 * (rand.nextInt(5)+1);
             if(iLane){
-                Flota[i] = new plane(700, 800 + i * iRand * level, iLane);
+                Fleet[i] = new plane(700, 800 + i * iRand * level, iLane);
             }else{
-                Flota[i] = new plane(800 + i * iRand * level, 700, iLane);
+                Fleet[i] = new plane(800 + i * iRand * level, 700, iLane);
             }
-        System.out.println("Samolot nr" + i + " [" + Flota[i].getX() + "," + Flota[i].getY() + "] " + Flota[i].getLane());    
+        System.out.println("Samolot nr" + i + " [" + Fleet[i].getX() + "," + Fleet[i].getY() + "] " + Fleet[i].getLane());    
         }
-        
-        horizontalParking = new int[3];
-        for(int i = 0; i < horizontalParking.length; i++){
-            horizontalParking[i] = 10;
-        }
-        
-        verticalParking   = new int[3];
-        for(int i = 0; i < verticalParking.length; i++){
-            verticalParking[i] = 10;
-        }        
-        
-        zegar = new Timer();
-        zegar.scheduleAtFixedRate(new Dzialanie(), 0, 20);   
     }
-     
+    public void newParking(){
+        horizontalParking = new int[3];
+            for(int i = 0; i < horizontalParking.length; i++){
+                horizontalParking[i] = 10;
+            }
+        verticalParking   = new int[3];
+            for(int i = 0; i < verticalParking.length; i++){
+                verticalParking[i] = 10;
+            }
+    }
+    public void loadImages(){
+        menu =      new ImageIcon("Obrazki/menu.png").getImage();
+        lotnisko =  new ImageIcon("Obrazki/lotnisko.png").getImage();
+        airliner =   new ImageIcon("Obrazki/samolot.png").getImage();
+    }
+    
     @Override
     public void paint(Graphics g){
         BufferStrategy bstrategy = this.getBufferStrategy();
         Graphics2D g2D = (Graphics2D) bstrategy.getDrawGraphics();
         
-        if(start){ //Start gry
-            g2D.drawImage(lotnisko, 0,  26, null);   // Nie wiem dlaczego ale obcina 26px z góry.
-            for(int i = 0; i < Flota.length; i++ ){
+        if(!start){//Rysowanie menu
+            g2D.drawImage(menu, 0,  26, null);      // Obcina 26px z góry.
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if(e.getX() > 574 && e.getX() < 766 && e.getY() < 775 && e.getY() > 651)
+                        start = true;
+                }
+            });
+        }else{//Start gry
+            g2D.drawImage(lotnisko, 0,  26, null);   // Obcina 26px z góry.
+            for(int i = 0; i < Fleet.length; i++ ){
 //                g2D.rotate(0,Flota[i].getX() + 15,  Flota[i].getY() + 26 + 15);
 //                if(Flota[i].getLane()){
 //                    if(Flota[i].getX() >= 600 && Flota[i].getY() >= 460){
@@ -325,37 +339,23 @@ public class AirPort extends JFrame{
 //                        //g2D.drawImage(samolot,  Flota[i].getX(),  Flota[i].getY() + 26, null); 
 //                    }
 //                } 
-                g2D.drawImage(samolot,  Flota[i].getX(),  Flota[i].getY() + 26, null); 
+                g2D.drawImage(airliner,  Fleet[i].getX(),  Fleet[i].getY() + 26, null); 
             }
 
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {    
-                   //System.out.println("X" + e.getX() + "Y:" + e.getY());
-                   for(int i = 0; i < Flota.length; i++){
-                       //System.out.println("Nr" + i + " X:" + e.getX() + "pX:" + Flota[i].getX() + "| Y:" + e.getY() + "pY: " + Flota[i].getY());
-                        if((e.getX() -31) <= Flota[i].getX() && e.getX() >= Flota[i].getX() && (e.getY() -30 -26) <= Flota[i].getY() && e.getY() >= (Flota[i].getY() +26)){
-                            Flota[i].setlaneChange(true);
-                            Flota[i].setxChange(Flota[i].getX());
-                            Flota[i].setyChange(Flota[i].getY());
+                   for(int i = 0; i < Fleet.length; i++){
+                        if((e.getX() -31) <= Fleet[i].getX() && e.getX() >= Fleet[i].getX() && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26)){
+                            Fleet[i].setlaneChange(true);
+                            Fleet[i].setxChange(Fleet[i].getX());
+                            Fleet[i].setyChange(Fleet[i].getY());
                             System.out.println("Kliknięto");
                         }                           
                    }
                 }
             });
-        }else{
-            //Rysowanie menu
-            g2D.drawImage(menu, 0,  26, null); 
-            addMouseListener(new MouseAdapter() {
-
-                @Override
-                public void mouseClicked(MouseEvent e) {                   
-                    if(e.getX() > 574 && e.getX() < 766 && e.getY() < 775 && e.getY() > 651)
-                        start = true;
-                }
-            });
         }
-        
         g2D.dispose();
         bstrategy.show();
     }
