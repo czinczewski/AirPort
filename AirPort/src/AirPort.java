@@ -92,7 +92,7 @@ public class AirPort extends JFrame{
                     if(horizontalParking[j] == 10 && !Fleet[i].getParked1()){
                         horizontalParking[j] = i;
                         Fleet[i].setParked1(true);
-                        System.out.println("horizontalParking " + j + " sam nr:" + i);
+                        System.out.println("horizontalParking_" + j + " sam nr:" + i);
                     }
                 }    
                 if( i == horizontalParking[0]){
@@ -131,13 +131,20 @@ public class AirPort extends JFrame{
             }else if(Fleet[i].getLoad() < 500 && Fleet[i].getParked1() && !Fleet[i].getStart()){ //Wsiadanie pasażerów
                 Fleet[i].setLoad(Fleet[i].getLoad() + Fleet[i].getSpeed());
             }else if(Fleet[i].getStart() && Fleet[i].getLoad() >= 500 && !Fleet[i].getCross()){
-                
-                
+                if(Fleet[i].getParked2()){
+                    if(horizontal[0] == 10 && horizontal[1] != 10){
+                         System.out.println("Przemieszczam horizontal_[" + horizontal[0] +" "+ horizontal[1]+" "+ horizontal[2]);
+                        horizontal[0] = horizontal[1];
+                        horizontal[1] = horizontal[2];
+                        horizontal[2] = 10;
+                        System.out.println("Przemieściłem horizontal_[" + horizontal[0] +" "+ horizontal[1]+" "+ horizontal[2]);
+                    }
+                }
                 for(int j = 0; j < 3; j++){
                     if(horizontal[j] == 10 && !Fleet[i].getParked2()){
                         horizontal[j] = i;
                         Fleet[i].setParked2(true);
-                        System.out.println("Horizontal " + j + " sam nr:" + i);
+                        System.out.println("Horizontal_" + j + " sam nr:" + i);
                     }
                 }
                 if(horizontal[0] == i){
@@ -145,25 +152,20 @@ public class AirPort extends JFrame{
                         Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
                     }else if(Fleet[i].getX() <= 195){
                         Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
-                    }else if(Fleet[i].getX() >= 195 && Fleet[i].getY() <= 320){
+                    }else if(Fleet[i].getY() <= 320){
                         Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
                         if(Fleet[i].getParked1()){
                             Fleet[i].setParked1(false);
                             for(int j = 0; j < 3; j++){
                                 if(horizontalParking[j] == i){
                                     horizontalParking[j] = 10;
-                                    System.out.println("Opusciłem2 mijsce nr: " + j);
+                                    System.out.println("Opusciłem horizontalParking_" + j + " sam nr:" + i);
                                 }
                             }
                         }
                     }
-                    if(Fleet[i].getX() > 192 && Fleet[i].getY() <= 320 && !Fleet[i].getParked1()){
-                        if(Fleet[i].getX() > 190 ){
-                            Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());
-                        }else{
-                            Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
-                        }
-                            
+                    if(Fleet[i].getX() >= 230){
+                        Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());
                     }
                 }
                 if(horizontal[1] == i){
@@ -178,7 +180,7 @@ public class AirPort extends JFrame{
                             for(int j = 0; j < 3; j++){
                                 if(horizontalParking[j] == i){
                                     horizontalParking[j] = 10;
-                                    System.out.println("Opusciłem2 mijsce nr: " + j);
+                                    System.out.println("Opusciłem horizontalParking_" + j + " sam nr:" + i);
                                 }
                             }
                         }
@@ -201,7 +203,7 @@ public class AirPort extends JFrame{
                             for(int j = 0; j < 3; j++){
                                 if(horizontalParking[j] == i){
                                     horizontalParking[j] = 10;
-                                    System.out.println("Opusciłem2 mijsce nr: " + j);
+                                    System.out.println("Opusciłem horizontalParking_" + j + " sam nr:" + i);
                                 }
                             }
                         }
@@ -209,51 +211,34 @@ public class AirPort extends JFrame{
                 }
             }else if(Fleet[i].getCross() && Fleet[i].getStart()){//kolejna faza
                 if(Fleet[i].getParked2()){
-                    if(horizontal[0] == 10 && horizontal[1] != 10){
-                        if(horizontal[2] != 10){
-                            horizontal[0] = horizontal[1];
-                            horizontal[1] = horizontal[2];
-                            horizontal[2] = 10;
-                        }
-                        if(horizontal[2] == 10){
-                            horizontal[0] = horizontal[1];
-                            horizontal[1] = 10;
-                        }
+                    if(horizontalStart[0] == 10 && horizontalStart[1] != 10){
+                        System.out.println("Przemieszczam horizontalStart_[" + horizontalStart[0] +" "+ horizontalStart[1]+" "+ horizontalStart[2]);
+                        horizontalStart[0] = horizontalStart[1];
+                        horizontalStart[1] = horizontalStart[2];
+                        horizontalStart[2] = 10;
+                        System.out.println("Przemieściłem horizontalStart_[" + horizontalStart[0] +" "+ horizontalStart[1]+" "+ horizontalStart[2]);
                     }
-                }
-                if(Fleet[i].getParked2()){
-                    if(horizontalStart[0] == 10){
-                        if(horizontalStart[1] != 10 && horizontalStart[2] != 10){
-                            horizontalStart[0] = horizontalStart[1];
-                            horizontalStart[1] = horizontalStart[2];
-                            horizontalStart[2] = 10;
-                        }
-                        if(horizontalStart[1] != 10 && horizontalStart[2] == 10){
-                            horizontalStart[0] = horizontalStart[1];
-                            horizontalStart[1] = 10;
-                        }
-                    }
-                }
-                
+                } 
                 for(int j = 0; j < 3; j++){
                     if(horizontalStart[j] == 10 && !Fleet[i].getParked3()){
                         horizontalStart[j] = i;
                         Fleet[i].setParked3(true);
-                        System.out.println("HorizontalStart " + j + " sam nr:" + i);
+                        System.out.println("HorizontalStart_" + j + " sam nr:" + i);
                     }
                 }
                 
                 if(horizontalStart[0] == i){
                     if(Fleet[i].getY() <= 565){
                         Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
-                    }else if(Fleet[i].getX() <= 315){
+                    }
+                    if(Fleet[i].getX() <= 315 && Fleet[i].getY() >= 565){
                         Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
                         if(Fleet[i].getParked2()){
                             Fleet[i].setParked2(false);
                             for(int j = 0; j < 3; j++){
-                                if(horizontalStart[j] == i){
-                                    horizontalStart[j] = 10;
-                                    System.out.println("Opusciłem3 miejsce nr: " + j);
+                                if(horizontal[j] == i){
+                                    horizontal[j] = 10;
+                                    System.out.println("Opusciłem horizontal_" + j + " sam nr:" + i);
                                 }
                             }
                         }
@@ -267,9 +252,9 @@ public class AirPort extends JFrame{
                         if(Fleet[i].getParked2()){
                             Fleet[i].setParked2(false);
                             for(int j = 0; j < 3; j++){
-                                if(horizontalStart[j] == i){
-                                    horizontalStart[j] = 10;
-                                    System.out.println("Opusciłem3 miejsce nr: " + j);
+                                if(horizontal[j] == i){
+                                    horizontal[j] = 10;
+                                    System.out.println("Opusciłem horizontal_" + j + " sam nr:" + i);
                                 }
                             }
                         }
@@ -283,9 +268,9 @@ public class AirPort extends JFrame{
                         if(Fleet[i].getParked2()){
                             Fleet[i].setParked2(false);
                             for(int j = 0; j < 3; j++){
-                                if(horizontalStart[j] == i){
-                                    horizontalStart[j] = 10;
-                                    System.out.println("Opusciłem3 miejsce nr: " + j);
+                                if(horizontal[j] == i){
+                                    horizontal[j] = 10;
+                                    System.out.println("Opusciłem horizontal_" + j + " sam nr:" + i);
                                 }
                             }
                         }
@@ -343,10 +328,10 @@ public class AirPort extends JFrame{
                     if(verticalParking[j] == 10 && !Fleet[i].getParked1()){
                         verticalParking[j] = i;
                         Fleet[i].setParked1(true);
-                        System.out.println("Pion" + j + " nr sam: " + i);
+                        System.out.println("verticalParking_" + j + " sam nr:" + i);
                     }
-
-                    if( i == verticalParking[0]){
+                }    
+                if( i == verticalParking[0]){
                     if(Fleet[i].getX() > 300){
                         Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());
                     }else{
@@ -379,9 +364,154 @@ public class AirPort extends JFrame{
                         }
                     }
                 }
-                }
-            }else if(Fleet[i].getLoad() < 500 && !Fleet[i].getStart()){
+            }else if(Fleet[i].getLoad() < 500 && Fleet[i].getParked1() && !Fleet[i].getStart()){ //Wsiadanie pasażerów
                 Fleet[i].setLoad(Fleet[i].getLoad() + Fleet[i].getSpeed());
+            }else if(Fleet[i].getStart() && Fleet[i].getLoad() >= 500 && !Fleet[i].getCross()){
+                if(Fleet[i].getParked2()){
+                    if(vertical[0] == 10 && vertical[1] != 10){
+                         System.out.println("Przemieszczam vertical_[" + vertical[0] +" "+ vertical[1]+" "+ vertical[2]);
+                        vertical[0] = vertical[1];
+                        vertical[1] = vertical[2];
+                        vertical[2] = 10;
+                        System.out.println("Przemieściłem vertical_[" + vertical[0] +" "+ vertical[1]+" "+ vertical[2]);
+                    }
+                }
+                for(int j = 0; j < 3; j++){
+                    if(vertical[j] == 10 && !Fleet[i].getParked2()){
+                        vertical[j] = i;
+                        Fleet[i].setParked2(true);
+                        System.out.println("Vertical_" + j + " sam nr:" + i);
+                    }
+                }
+                if(vertical[0] == i){
+                    if(Fleet[i].getX() <= 260){
+                        Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                    }else if(Fleet[i].getY() <= 195){
+                        Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
+                    }else if(Fleet[i].getX() <= 320){
+                        Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                        if(Fleet[i].getParked1()){
+                            Fleet[i].setParked1(false);
+                            for(int j = 0; j < 3; j++){
+                                if(verticalParking[j] == i){
+                                    verticalParking[j] = 10;
+                                    System.out.println("Opusciłem verticalParking_" + j + " sam nr:" + i);
+                                }
+                            }
+                        }
+                    }
+                    if(Fleet[i].getY() >= 230){
+                        Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
+                    }
+                }
+                if(vertical[1] == i){
+                    if(Fleet[i].getX() <= 260){
+                        Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                    }else if(Fleet[i].getY() <= 230){
+                        Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
+                    }else if(Fleet[i].getY() >= 230 && Fleet[i].getX() <= 295){
+                        Fleet[i].setX(Fleet[i].getY() + Fleet[i].getSpeed());
+                        if(Fleet[i].getParked1()){
+                            Fleet[i].setParked1(false);
+                            for(int j = 0; j < 3; j++){
+                                if(verticalParking[j] == i){
+                                    verticalParking[j] = 10;
+                                    System.out.println("Opusciłem verticalParking_" + j + " sam nr:" + i);
+                                }
+                            }
+                        }
+                    }
+                    if(Fleet[i].getY() > 231 || Fleet[i].getX() > 295){
+                        if(Fleet[i].getY() > 231 ){
+                            Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
+                        }
+                    }
+                }
+                if(vertical[2] == i){
+                    if(Fleet[i].getX() <= 260){
+                        Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                    }else if(Fleet[i].getY() <= 265){
+                        Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
+                    }else if(Fleet[i].getY() >= 265 && Fleet[i].getX() <= 295){
+                        Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                        if(Fleet[i].getParked1()){
+                            Fleet[i].setParked1(false);
+                            for(int j = 0; j < 3; j++){
+                                if(verticalParking[j] == i){
+                                    verticalParking[j] = 10;
+                                    System.out.println("Opusciłem verticalParking_" + j + " sam nr:" + i);
+                                }
+                            }
+                        }
+                    }
+                }
+            }else if(Fleet[i].getCross() && Fleet[i].getStart()){//kolejna faza
+                if(Fleet[i].getParked2()){
+                    if(verticalStart[0] == 10 && verticalStart[1] != 10){
+                        System.out.println("Przemieszczam verticalStart_[" + verticalStart[0] +" "+ verticalStart[1]+" "+ verticalStart[2]);
+                        verticalStart[0] = verticalStart[1];
+                        verticalStart[1] = verticalStart[2];
+                        verticalStart[2] = 10;
+                        System.out.println("Przemieściłem verticalStart_[" + verticalStart[0] +" "+ verticalStart[1]+" "+ verticalStart[2]);
+                    }
+                } 
+                for(int j = 0; j < 3; j++){
+                    if(verticalStart[j] == 10 && !Fleet[i].getParked3()){
+                        verticalStart[j] = i;
+                        Fleet[i].setParked3(true);
+                        System.out.println("VerticalStart_" + j + " sam nr:" + i);
+                    }
+                }
+                
+                if(verticalStart[0] == i){
+                    if(Fleet[i].getX() <= 565){
+                        Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                    }
+                    if(Fleet[i].getY() <= 315 && Fleet[i].getX() >= 565){
+                        Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
+                        if(Fleet[i].getParked2()){
+                            Fleet[i].setParked2(false);
+                            for(int j = 0; j < 3; j++){
+                                if(vertical[j] == i){
+                                    vertical[j] = 10;
+                                    System.out.println("Opusciłem vertical_" + j + " sam nr:" + i);
+                                }
+                            }
+                        }
+                    }
+                }///
+                if(verticalStart[1] == i){
+                    if(Fleet[i].getX() <= 565){
+                        Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                    }else if(Fleet[i].getY() <= 280){
+                        Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
+                        if(Fleet[i].getParked2()){
+                            Fleet[i].setParked2(false);
+                            for(int j = 0; j < 3; j++){
+                                if(vertical[j] == i){
+                                    vertical[j] = 10;
+                                    System.out.println("Opusciłem vertical_" + j + " sam nr:" + i);
+                                }
+                            }
+                        }
+                    }
+                }
+                if(verticalStart[2] == i){
+                    if(Fleet[i].getX() <= 565){
+                        Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                    }else if(Fleet[i].getY() <= 245){
+                        Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
+                        if(Fleet[i].getParked2()){
+                            Fleet[i].setParked2(false);
+                            for(int j = 0; j < 3; j++){
+                                if(vertical[j] == i){
+                                    vertical[j] = 10;
+                                    System.out.println("Opusciłem vertical_" + j + " sam nr:" + i);
+                                }
+                            }
+                        }
+                    }
+                }                
             }
         }
         private void changeHorizontal(int i){
@@ -689,6 +819,7 @@ public class AirPort extends JFrame{
                 @Override
                 public void mousePressed(MouseEvent e) {    
                    for(int i = 0; i < Fleet.length; i++){
+                       //zmian pasa
                         if((e.getX() -31) <= Fleet[i].getX() && e.getX()>= Fleet[i].getX() 
                                 && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26) 
                                 && e.getX() >= 400 && e.getY() >= 400){
@@ -698,26 +829,58 @@ public class AirPort extends JFrame{
                                 Fleet[i].setyChange(Fleet[i].getY());
                             }
                         }
+                        //ustawianie w kolejkę do skrzyżowania
                         if((e.getX() -31) <= Fleet[i].getX() && e.getX()>= Fleet[i].getX() 
                                 && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26) 
-                                && e.getX() <= 260 && e.getY() <= (260 + 26) && Fleet[i].getParked1()){
+                                && e.getX() <= 260 && e.getY() <= (260 + 26) && Fleet[i].getLoad() >= 500){
                             if(!Fleet[i].getStart()){    
                                 Fleet[i].setStart(!Fleet[i].getStart());
                             }
                         }
+                        // cross poziom
                         if((e.getX() -31) <= Fleet[i].getX() && e.getX()>= Fleet[i].getX() 
-                                && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26) 
-                                && e.getX() <= 350 && e.getY() <= (350 + 26) && Fleet[i].getParked2() && Fleet[i].getStart()){
+                                && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26) && e.getX() >= 190 && e.getY() >= (310 + 26)
+                                && e.getX() <= 230 && e.getY() <= (350 + 26) && Fleet[i].getParked2() && Fleet[i].getStart()){
                             if(!Fleet[i].getCross()){    
                                 Fleet[i].setCross(true);
-                                System.out.println("Cross " + i + Fleet[i].getCross());
+                                System.out.println("Cross_" + i + "_" + Fleet[i].getCross());
+                            }
+                        }
+                        // cross pion
+                        if((e.getX() -31) <= Fleet[i].getX() && e.getX()>= Fleet[i].getX() 
+                                && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26) && e.getX() >= 310 && e.getY() >= (190 + 26)
+                                && e.getX() <= 350 && e.getY() <= (230 + 26) && Fleet[i].getParked2() && Fleet[i].getStart()){
+                            if(!Fleet[i].getCross()){    
+                                Fleet[i].setCross(true);
+                                System.out.println("Cross_" + i + "_" + Fleet[i].getCross());
+                            }
+                        }
+                        // fly poziom
+                        if((e.getX() -31) <= Fleet[i].getX() && e.getX()>= Fleet[i].getX() 
+                                && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26) && e.getX() >= 310 && e.getY() >= (560 + 26)
+                                && e.getX() <= 350 && e.getY() <= (600 + 26) && Fleet[i].getParked2() && Fleet[i].getStart()){
+                            if(!Fleet[i].getCross()){    
+                                Fleet[i].setCross(true);
+                                System.out.println("Fly_" + i + "_" + Fleet[i].getCross());
+                            }
+                        }
+                        // fly pion
+                        if((e.getX() -31) <= Fleet[i].getX() && e.getX()>= Fleet[i].getX() 
+                                && (e.getY() -30 -26) <= Fleet[i].getY() && e.getY() >= (Fleet[i].getY() +26) && e.getX() >= 560 && e.getY() >= (310 + 26)
+                                && e.getX() <= 600 && e.getY() <= (350 + 26) && Fleet[i].getParked2() && Fleet[i].getStart()){
+                            if(!Fleet[i].getFly()){    
+                                Fleet[i].setFly(true);
+                                System.out.println("Fly_ " + i + "_" + Fleet[i].getFly());
                             }
                         }
                    }
                 }
             });
             g2D.drawRect(0, 26, 260, 260);
-            g2D.drawRect(0, 26, 350, 350);
+            g2D.drawRect(190, 310+26, 40, 40);// cross poziom
+            g2D.drawRect(310, 190+26, 40, 40);// cross pion
+            g2D.drawRect(310, 560+26, 40, 40);// fly poziom
+            g2D.drawRect(560, 310+26, 40, 40);// fly pion
             g2D.drawRect(400, 426, 400, 400);
         }
         g2D.dispose();
