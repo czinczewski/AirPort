@@ -19,16 +19,17 @@ public class AirPort extends JFrame{
         AirPort window = new AirPort();
         window.repaint();  
     }
-    
+    //Flota samolotów
     private plane[] Fleet;
-    //parkingi i kolejki na lotnisku
-    private int horizontalParking[], verticalParking[], horizontal[], vertical[], horizontalStart[], verticalStart[];          
+    //Parkingi i kolejki na lotnisku
+    private int horizontalParking[], verticalParking[], horizontal[], vertical[], horizontalStart[], verticalStart[]; 
+    //Grafika gry
     private Image Menu, GameOver, Lotnisko, Airliner;
-        
+    
     private Timer timer;
-    private boolean start       = false;
-    private boolean gameover    = false;
-    private int     level       =   1;      //wprowadzić zmiane poziomów
+    private boolean start = false, gameover = false;
+    //Zmienna do zmiany poziomów
+    private int     level = 1;      
     
     class Dzialanie extends TimerTask{
         private double  radDegree   =   0;
