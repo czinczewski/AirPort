@@ -21,9 +21,8 @@ public class AirPort extends JFrame{
     }
     
     private plane[] Fleet;
-    private int horizontalParking[], verticalParking[];        //parking poziomy i pionowy
-    private int horizontal[], vertical[];                    //listy do wyjazdu
-    private int horizontalStart[], verticalStart[];          //listy przed odlotem
+    //parkingi i kolejki na lotnisku
+    private int horizontalParking[], verticalParking[], horizontal[], vertical[], horizontalStart[], verticalStart[];          
     private Image Menu, GameOver, Lotnisko, Airliner;
         
     private Timer timer;
@@ -212,11 +211,12 @@ public class AirPort extends JFrame{
             }else if(Fleet[i].getCross() && Fleet[i].getStart()){//kolejna faza
                 if(Fleet[i].getParked2()){
                     if(horizontalStart[0] == 10 && horizontalStart[1] != 10){
-                        System.out.println("Przemieszczam horizontalStart_[" + horizontalStart[0] +" "+ horizontalStart[1]+" "+ horizontalStart[2]);
+                        System.out.println("Przemieszczam horizontalStart_[" + horizontalStart[0] +" "+ horizontalStart[1]+" "+ horizontalStart[2] +" "+ horizontalStart[3]);
                         horizontalStart[0] = horizontalStart[1];
                         horizontalStart[1] = horizontalStart[2];
-                        horizontalStart[2] = 10;
-                        System.out.println("Przemieściłem horizontalStart_[" + horizontalStart[0] +" "+ horizontalStart[1]+" "+ horizontalStart[2]);
+                        horizontalStart[2] = horizontalStart[3];
+                        horizontalStart[3] = 10;
+                        System.out.println("Przemieściłem horizontalStart_[" + horizontalStart[0] +" "+ horizontalStart[1]+" "+ horizontalStart[2] +" "+ horizontalStart[3]);
                     }
                 } 
                 for(int j = 0; j < 3; j++){
@@ -264,6 +264,22 @@ public class AirPort extends JFrame{
                     if(Fleet[i].getY() <= 565){
                         Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
                     }else if(Fleet[i].getX() <= 245){
+                        Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                        if(Fleet[i].getParked2()){
+                            Fleet[i].setParked2(false);
+                            for(int j = 0; j < 3; j++){
+                                if(horizontal[j] == i){
+                                    horizontal[j] = 10;
+                                    System.out.println("Opusciłem horizontal_" + j + " sam nr:" + i);
+                                }
+                            }
+                        }
+                    }
+                }
+                if(horizontalStart[3] == i){
+                    if(Fleet[i].getY() <= 565){
+                        Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
+                    }else if(Fleet[i].getX() <= 210){
                         Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
                         if(Fleet[i].getParked2()){
                             Fleet[i].setParked2(false);
@@ -448,11 +464,12 @@ public class AirPort extends JFrame{
             }else if(Fleet[i].getCross() && Fleet[i].getStart()){//kolejna faza
                 if(Fleet[i].getParked2()){
                     if(verticalStart[0] == 10 && verticalStart[1] != 10){
-                        System.out.println("Przemieszczam verticalStart_[" + verticalStart[0] +" "+ verticalStart[1]+" "+ verticalStart[2]);
+                        System.out.println("Przemieszczam verticalStart_[" + verticalStart[0] +" "+ verticalStart[1]+" "+ verticalStart[2] +" "+ verticalStart[3]);
                         verticalStart[0] = verticalStart[1];
                         verticalStart[1] = verticalStart[2];
-                        verticalStart[2] = 10;
-                        System.out.println("Przemieściłem verticalStart_[" + verticalStart[0] +" "+ verticalStart[1]+" "+ verticalStart[2]);
+                        verticalStart[2] = verticalStart[3];
+                        verticalStart[3] = 10;
+                        System.out.println("Przemieściłem verticalStart_[" + verticalStart[0] +" "+ verticalStart[1]+" "+ verticalStart[2] +" "+ verticalStart[3]);
                     }
                 } 
                 for(int j = 0; j < 3; j++){
@@ -511,7 +528,23 @@ public class AirPort extends JFrame{
                             }
                         }
                     }
-                }                
+                }  
+                if(verticalStart[3] == i){
+                    if(Fleet[i].getX() <= 565){
+                        Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                    }else if(Fleet[i].getY() <= 210){
+                        Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
+                        if(Fleet[i].getParked2()){
+                            Fleet[i].setParked2(false);
+                            for(int j = 0; j < 3; j++){
+                                if(vertical[j] == i){
+                                    vertical[j] = 10;
+                                    System.out.println("Opusciłem vertical_" + j + " sam nr:" + i);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         private void changeHorizontal(int i){
@@ -739,11 +772,11 @@ public class AirPort extends JFrame{
             for(int i = 0; i < vertical.length; i++){
                 vertical[i] = 10;
             }
-        horizontalStart = new int[3];
+        horizontalStart = new int[4];
             for(int i = 0; i < horizontalStart.length; i++){
                 horizontalStart[i] = 10;
             }
-        verticalStart   = new int[3];
+        verticalStart   = new int[4];
             for(int i = 0; i < verticalStart.length; i++){
                 verticalParking[i] = 10;
             }
