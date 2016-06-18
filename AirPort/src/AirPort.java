@@ -793,7 +793,7 @@ public class AirPort extends JFrame{
         Menu =      new ImageIcon("Obrazki/menu.png").getImage();
         GameOver =  new ImageIcon("Obrazki/gameover.png").getImage();
         Lotnisko =  new ImageIcon("Obrazki/lotnisko.png").getImage();
-        Airliner =  new ImageIcon("Obrazki/samolot.png").getImage();
+        Airliner =  new ImageIcon("Obrazki/samolot1.png").getImage();
     }
     
     @Override
