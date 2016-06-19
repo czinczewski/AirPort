@@ -19,7 +19,6 @@ import javax.swing.JFrame;
 public class AirPort extends JFrame{
     public static void main(String[] args) {
         AirPort window = new AirPort();
-        window.repaint();  
     }
     //Flota samolotów
     private plane[] Fleet;
@@ -31,7 +30,7 @@ public class AirPort extends JFrame{
     
     private Timer timer;
     private boolean start = false, gameover = false;
-    private int level = 1, points = 0;       
+    private int points = 0;       
     
     class Dzialanie extends TimerTask{
         private double  radDegree   =   0;
@@ -41,7 +40,6 @@ public class AirPort extends JFrame{
         public  void run(){
             if(start){
                 for(int i = 0; i < 6; i++){         
-                    setLevel(i); //przypisanie prędkości zgodnie z poziomem
                     if(Fleet[i].getLane()){ //PRZYLOT PIONOWY (z dołu)
                         if(!Fleet[i].getlaneChange()){
                             comingVertical(i);      //przylot normalny
@@ -60,16 +58,7 @@ public class AirPort extends JFrame{
             }
         repaint();
         }
-        private void setLevel(int i){
-            if(level <= 1){
-                Fleet[i].setSpeed(1);
-            }else if(level == 2){
-                Fleet[i].setSpeed(2);
-            }else if(level >= 3){      //poziom nie do przejścia
-                Fleet[i].setSpeed(4);   
-            }                           
-        }
-        private void comingVertical(int i){
+        private void comingVertical     (int i){
             if(Fleet[i].getX() >= 600 && Fleet[i].getY() >= 460){
                 Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
             }else if(Fleet[i].getX() >= 600 && Fleet[i].getY() <= 460 && Fleet[i].getY() >= 360 && Fleet[i].getDegree() > -90 && !Fleet[i].getStart()){
@@ -87,70 +76,7 @@ public class AirPort extends JFrame{
                     Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());                                    
                 }
             }else if(Fleet[i].getY() <= 320 && Fleet[i].getY() >= 210 &&  Fleet[i].getX() >= 60 &&  Fleet[i].getX() <= 190 && !Fleet[i].getStart()){ //PARKOWANIE 
-                for(int j = 0; j < 3; j++){
-                    if(horizontalParking[j] == 10 && !Fleet[i].getParked1()){
-                        horizontalParking[j] = i;
-                        Fleet[i].setParked1(true);
-                        System.out.println("horizontalParking_" + j + " sam nr:" + i);
-                    }
-                }    
-                if( i == horizontalParking[0]){
-                    if(Fleet[i].getY() > 250){
-                        Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
-                    }else{
-                        if(Fleet[i].getX() > 100 && Fleet[i].getDegree() >= -90){
-                            Fleet[i].setDegree(Fleet[i].getDegree() - Fleet[i].getSpeed());
-                            if(Fleet[i].getDegree() <= -90){
-                                Fleet[i].setDegree(-90d);
-                                Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());                                    
-                            }                                        
-                        }else if(Fleet[i].getDegree() <= 0){
-                            Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
-                            if(Fleet[i].getDegree() >= 0){
-                                Fleet[i].setDegree(0d);
-                                Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());                                           
-                            }
-                        }
-                    }
-                }
-                if( i == horizontalParking[1]){
-                    if(Fleet[i].getY() > 250){
-                        Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
-                    }else{
-                        if(Fleet[i].getX() <= 140 && Fleet[i].getDegree() <= 90){
-                           Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
-                            if(Fleet[i].getDegree() >= 90){
-                                Fleet[i].setDegree(90d);
-                                Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
-                            }
-                        }else if(Fleet[i].getDegree() >= 0){
-                            Fleet[i].setDegree(Fleet[i].getDegree() - Fleet[i].getSpeed());
-                            if(Fleet[i].getDegree() <= 0){
-                                Fleet[i].setDegree(0d);
-                                Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed()); 
-                            }
-                        }
-                    }
-                }
-                if( i == horizontalParking[2]){
-                    if(Fleet[i].getY() > 250){
-                        Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
-                    }else{
-                        if(Fleet[i].getX() <= 180 && Fleet[i].getDegree() <= 90){
-                               Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
-                               if(Fleet[i].getDegree() >= 90){
-                                    Fleet[i].setDegree(90d);
-                                    Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());  
-                               }
-                        }else if(Fleet[i].getDegree() >= 0){
-                            Fleet[i].setDegree(Fleet[i].getDegree() - Fleet[i].getSpeed());
-                            if(Fleet[i].getDegree() <= 0){
-                                Fleet[i].setDegree(0d);
-                                Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());  
-                            }
-                        }                    
-                    }
-                }
+                parkingHorizontal(i);
             }else if(Fleet[i].getY() <= 220 && Fleet[i].getY() >= 200 && Fleet[i].getLoad() < 500 && Fleet[i].getParked1() && !Fleet[i].getStart()){ //Wsiadanie pasażerów
                 Fleet[i].setLoad(Fleet[i].getLoad() + Fleet[i].getSpeed());
             }else if(Fleet[i].getX() <= 320 && Fleet[i].getX() >= 100 && Fleet[i].getY() <= 350 && Fleet[i].getY() >= 190 && Fleet[i].getStart() && Fleet[i].getLoad() >= 500 && !Fleet[i].getCross()){
@@ -392,11 +318,14 @@ public class AirPort extends JFrame{
                             System.out.println("Przemieściłem horizontalStart_[" + horizontalStart[0] +" "+ horizontalStart[1]+" "+ horizontalStart[2] +" "+ horizontalStart[3]);
                         }
                     }
-                    Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
-                    if(Fleet[i].getY() == 110){
-                        points = points +10;
-                        newPlane(i);
-                        System.out.println("Masz_" + points +"pkt.");
+                    Fleet[i].setDegree(Fleet[i].getDegree() - Fleet[i].getSpeed());
+                    if(Fleet[i].getDegree() <= 0){
+                        Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
+                        Fleet[i].setDegree(0d);
+                        if(Fleet[i].getY() == 110){
+                            points = points +10;
+                            System.out.println("Masz_" + points +"pkt.");
+                        }
                     }
                 }
             }else if(Fleet[i].getFly() && Fleet[i].getY() <= 110 && Fleet[i].getY() > 0 && Fleet[i].getX() <= 460 && Fleet[i].getX() >= 350 && Fleet[i].getDegree() <= 90){
@@ -406,10 +335,80 @@ public class AirPort extends JFrame{
                 Fleet[i].setY((int) (110d - radius * Math.sin(radDegree)));
             }else if(Fleet[i].getFly() && Fleet[i].getY() < 20 && Fleet[i].getX() >= 460 && Fleet[i].getX() <= 840){
                  Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                 if(Fleet[i].getX() == 840){
+                     newPlane(i);
+                 }
             }
             
         }
-        private void changeVertical(int i){
+        private void parkingHorizontal  (int i){
+                            for(int j = 0; j < 3; j++){
+                    if(horizontalParking[j] == 10 && !Fleet[i].getParked1()){
+                        horizontalParking[j] = i;
+                        Fleet[i].setParked1(true);
+                        System.out.println("horizontalParking_" + j + " sam nr:" + i);
+                    }
+                }    
+                if( i == horizontalParking[0]){
+                    if(Fleet[i].getY() > 250){
+                        Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
+                    }else{
+                        if(Fleet[i].getX() > 100 && Fleet[i].getDegree() >= -90){
+                            Fleet[i].setDegree(Fleet[i].getDegree() - Fleet[i].getSpeed());
+                            if(Fleet[i].getDegree() <= -90){
+                                Fleet[i].setDegree(-90d);
+                                Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());                                    
+                            }                                        
+                        }else if(Fleet[i].getDegree() <= 0){
+                            Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
+                            if(Fleet[i].getDegree() >= 0){
+                                Fleet[i].setDegree(0d);
+                                Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());                                           
+                            }
+                        }
+                    }
+                }
+                if( i == horizontalParking[1]){
+                    if(Fleet[i].getY() > 250){
+                        Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
+                    }else{
+                        if(Fleet[i].getX() <= 140 && Fleet[i].getDegree() <= 90){
+                           Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
+                            if(Fleet[i].getDegree() >= 90){
+                                Fleet[i].setDegree(90d);
+                                Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
+                            }
+                        }else if(Fleet[i].getDegree() >= 0){
+                            Fleet[i].setDegree(Fleet[i].getDegree() - Fleet[i].getSpeed());
+                            if(Fleet[i].getDegree() <= 0){
+                                Fleet[i].setDegree(0d);
+                                Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed()); 
+                            }
+                        }
+                    }
+                }
+                if( i == horizontalParking[2]){
+                    if(Fleet[i].getY() > 250){
+                        Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
+                    }else{
+                        if(Fleet[i].getX() <= 180 && Fleet[i].getDegree() <= 90){
+                               Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
+                               if(Fleet[i].getDegree() >= 90){
+                                    Fleet[i].setDegree(90d);
+                                    Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());  
+                               }
+                        }else if(Fleet[i].getDegree() >= 0){
+                            Fleet[i].setDegree(Fleet[i].getDegree() - Fleet[i].getSpeed());
+                            if(Fleet[i].getDegree() <= 0){
+                                Fleet[i].setDegree(0d);
+                                Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());  
+                            }
+                        }                    
+                    }
+                }
+        }
+        
+        private void changeVertical     (int i){
             if(Fleet[i].getY() >= 600 && Fleet[i].getX() >= 700 && !Fleet[i].getStart()){
                 Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
                 Fleet[i].setxChange(700);
@@ -437,18 +436,18 @@ public class AirPort extends JFrame{
                 Fleet[i].setDegree(0);
             }
         }
-        private void comingHorizontal(int i){
-            if(Fleet[i].getX() >= 460 && Fleet[i].getY() >= 600 && !Fleet[i].getStart()){
+        private void comingHorizontal   (int i){
+            if(Fleet[i].getX() >= 460 && Fleet[i].getY() >= 600){
                 Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());                                
-            }else if(Fleet[i].getY() >= 600 && Fleet[i].getX() <= 460 && Fleet[i].getX() >= 360 && Fleet[i].getDegree() <= 90 && !Fleet[i].getStart()){
+            }else if(Fleet[i].getY() >= 600 && Fleet[i].getX() <= 460 && Fleet[i].getX() >= 360 && Fleet[i].getDegree() < 90 && !Fleet[i].getStart()){
                 Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
                 radDegree = (Math.PI * Fleet[i].getDegree())/180;
                 Fleet[i].setX((int) (460d - radius * Math.sin(radDegree)));
                 Fleet[i].setY((int) (600d + radius * Math.cos(radDegree)));
-            }else if(Fleet[i].getY() < 600 && Fleet[i].getY() > 115 && Fleet[i].getX() <= 360 && Fleet[i].getX() >= 320 && !Fleet[i].getStart()){
+            }else if(Fleet[i].getY() <= 600 && Fleet[i].getY() > 115 && Fleet[i].getX() <= 360 && Fleet[i].getX() >= 320 && !Fleet[i].getStart()){
                 Fleet[i].changePosition(true); //wylądowałem
                 Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
-            }else if(Fleet[i].getY() <= 115 && Fleet[i].getX() <= 360 && Fleet[i].getX() >= 320 && Fleet[i].getDegree() <= 91 && !Fleet[i].getStart()){
+            }else if(Fleet[i].getY() <= 115 && Fleet[i].getY() >= 100 && Fleet[i].getX() <= 360 && Fleet[i].getX() >= 320 && Fleet[i].getDegree() >= 0 && !Fleet[i].getStart()){
                 Fleet[i].setDegree(Fleet[i].getDegree() - Fleet[i].getSpeed());
                 if(Fleet[i].getDegree() <= 0){
                     Fleet[i].setDegree(0d);
@@ -759,23 +758,29 @@ public class AirPort extends JFrame{
                             System.out.println("Przemieściłem verticalStart_[" + verticalStart[0] +" "+ verticalStart[1]+" "+ verticalStart[2] +" "+ verticalStart[3]);
                         }
                     }
-                    Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());
-                    if(Fleet[i].getX() == 110){
-                        points = points + 10;
-                        System.out.println("Masz_" + points +"pkt.");
-                        newPlane(i);
+                    Fleet[i].setDegree(Fleet[i].getDegree() + Fleet[i].getSpeed());
+                    if(Fleet[i].getDegree() >= 0){
+                        Fleet[i].setDegree(0d);
+                        Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());
+                        if(Fleet[i].getX() == 110){
+                            points = points + 10;
+                            System.out.println("Masz_" + points +"pkt.");
+                        }
                     }
                 }
-            }else if(Fleet[i].getFly() && Fleet[i].getX() <= 110 && Fleet[i].getX() > 0 && Fleet[i].getY() <= 460 && Fleet[i].getY() >= 350 && Fleet[i].getDegree() <= 90){
-                Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
+            }else if(Fleet[i].getFly() && Fleet[i].getX() <= 110 && Fleet[i].getX() > 0 && Fleet[i].getY() <= 460 && Fleet[i].getY() >= 350 && Fleet[i].getDegree() >= -90){
+                Fleet[i].setDegree(Fleet[i].getDegree() - (Fleet[i].getSpeed()));
                 radDegree = (Math.PI * Fleet[i].getDegree())/180;
-                Fleet[i].setX((int) (110d - radius * Math.sin(radDegree)));
-                Fleet[i].setY((int) (460d + radius * Math.cos(radDegree)));
+                Fleet[i].setX((int) (110d + radius * Math.sin(radDegree)));
+                Fleet[i].setY((int) (460d - radius * Math.cos(radDegree)));
             }else if(Fleet[i].getFly() && Fleet[i].getX() < 20 && Fleet[i].getY() >= 460 && Fleet[i].getY() <= 840){
                  Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
+                 if(Fleet[i].getY() == 840){
+                    newPlane(i);
+                 }
             }    
         }
-        private void changeHorizontal(int i){
+        private void changeHorizontal   (int i){
              if(Fleet[i].getX() >= 600 && Fleet[i].getY() >= 700){
                 Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());
                 Fleet[i].setxChange(600);
@@ -803,31 +808,31 @@ public class AirPort extends JFrame{
                 Fleet[i].setDegree(0);
             }
         }
-        private void detectionCollision(int i){
+        private void detectionCollision (int i){
             for(int j = 0; j < Fleet.length; j++){ //KOLIZJE 
                 for(int k = 0; k < Fleet.length; k++){
                     if(Fleet[j].getPosition() && Fleet[k].getPosition() && !Fleet[k].getCollision() && j != k){
                         if(Fleet[j].getX() >= Fleet[k].getX() && Fleet[j].getX() <= (Fleet[k].getX() + 30) && Fleet[j].getY() >= Fleet[k].getY() && Fleet[j].getY() <= (Fleet[k].getY() + 30 )){
                             Fleet[j].setCollision(true);
                             Fleet[k].setCollision(true);
-//                            System.out.println("Nr " + j + " zderzenie z nr " + k);
-//                            System.out.println("[" +Fleet[j].getX() + "," + Fleet[j].getY() + "]   [" +Fleet[k].getX() + "," + Fleet[k].getY() + "]" );
-//                            gameover = true;
-//                            start = false;
-//                            newFlota();
+                            System.out.println("Nr " + j + " zderzenie z nr " + k);
+                            System.out.println("[" +Fleet[j].getX() + "," + Fleet[j].getY() + "]   [" +Fleet[k].getX() + "," + Fleet[k].getY() + "]" );
+                            gameover = true;
+                            start = false;
+                            newFlota();
                         }
                     }
                 }
             }
         }
-        public void newPlane(int i){
+        public  void newPlane           (int i){
             boolean iLane = Math.random() < 0.5;
                 Random rand = new Random();            
                 int iRand = 50 * (rand.nextInt(5)+1);
                 if(iLane){
-                    Fleet[i] = new plane(700, 800 + i * iRand * level, iLane);
+                    Fleet[i] = new plane(700, 800 + i * iRand, iLane);
                 }else{
-                    Fleet[i] = new plane(800 + i * iRand * level, 700, iLane);
+                    Fleet[i] = new plane(800 + i * iRand, 700, iLane);
                 }
             System.out.println("Samolot nr" + i + " [" + Fleet[i].getX() + "," + Fleet[i].getY() + "] " + Fleet[i].getLane());
         }
@@ -851,6 +856,7 @@ public class AirPort extends JFrame{
             wsp[1] =    y;
             lane =      iLane;      //pas na którym się znajduje
             degree =    0;          //do zmian pasa i ladowania
+            speed = 1;
             laneChange = false;
             xChange = 0;            //współrzędne do zawracania
             yChange = 0;            //współrzędne do zawracania
@@ -964,7 +970,6 @@ public class AirPort extends JFrame{
             fly = iFly;
         }
     }
-
     AirPort(){
         //Okno
         super("Kontroler Lotów");
@@ -985,11 +990,11 @@ public class AirPort extends JFrame{
         for(int i = 0; i < Fleet.length; i++){
             boolean iLane = Math.random() < 0.5;
             Random rand = new Random();            
-            int iRand = 50 * (rand.nextInt(5)+1);
+            int iRand = 200 * (rand.nextInt(5)+1);
             if(iLane){
-                Fleet[i] = new plane(700, 800 + i * iRand * level, iLane);
+                Fleet[i] = new plane(700, 800 + i * iRand, iLane);
             }else{
-                Fleet[i] = new plane(800 + i * iRand * level, 700, iLane);
+                Fleet[i] = new plane(800 + i * iRand, 700, iLane);
             }
         System.out.println("Samolot nr" + i + " [" + Fleet[i].getX() + "," + Fleet[i].getY() + "] " + Fleet[i].getLane());    
         }
@@ -1027,18 +1032,14 @@ public class AirPort extends JFrame{
         plane1 =  LoadImage("Obrazki/samolot1.png");
         plane2 =  LoadImage("Obrazki/samolot2.png");
     }
-    
     BufferedImage LoadImage(String ImageName){
         BufferedImage img = null;
-        
         try{
              img = ImageIO.read(new File(ImageName));
         }catch(IOException e){  
         }
-         
         return img;
       }		      
-    
     @Override
     public void repaint(){
         BufferStrategy bstrategy = this.getBufferStrategy();
@@ -1047,32 +1048,11 @@ public class AirPort extends JFrame{
         if(!start){ //Rysowanie menu
             if(!gameover){
                 g2D.drawImage(Menu, 0,  26, null);      // Obcina 26px z góry.
-                Color pedzel1 = new Color(255,0,0); 
-                Color pedzel2 = new Color(0,255,0); 
-                g2D.setColor(pedzel1);
-                g2D.fillRect(550, 340, 200, 50);
-                g2D.fillRect(550, 400, 200, 50);
-                g2D.fillRect(550, 460, 200, 50);
                 addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         if(e.getX() > 574 && e.getX() < 766 && e.getY() < 775 && e.getY() > 651){
                             start = true;
-                        }
-                        if(e.getX() > 550 && e.getX() < 750 && e.getY() < 390 && e.getY() > 340){
-                            level = 1;
-                            g2D.setColor(pedzel2);
-                            g2D.fillRect(550, 340, 200, 50);
-                        }
-                        if(e.getX() > 550 && e.getX() < 750 && e.getY() < 450 && e.getY() > 400){
-                            level = 2;
-                            g2D.setColor(pedzel2);
-                            g2D.fillRect(550, 400, 200, 50);
-                        }
-                        if(e.getX() > 550 && e.getX() < 750 && e.getY() < 510 && e.getY() > 460){
-                            level = 3;
-                            g2D.setColor(pedzel2);
-                            g2D.fillRect(550, 460, 200, 50);
                         }
                     }
                 });
@@ -1093,7 +1073,6 @@ public class AirPort extends JFrame{
         }else{      //Start gry
             g2D.drawImage(Lotnisko, 0,  26, null);      // Obcina 26px z góry.
             for(int i = 0; i < Fleet.length; i++ ){
-
                 if(Fleet[i].getLane()){
                     AffineTransform at1 = AffineTransform.getTranslateInstance(Fleet[i].getX(), Fleet[i].getY()+ 26);
                     at1.translate(15, 15);
@@ -1112,7 +1091,7 @@ public class AirPort extends JFrame{
                 g2D.setColor(pedzel1);
                 g2D.drawString("Twoje punkty: ", 70, 75 + 26);
                 g2D.drawString(Integer.toString(points), 80, 90 + 26);
-                g2D.drawString(Integer.toString(i), Fleet[i].getX(), Fleet[i].getY() + 26);
+                //g2D.drawString(Integer.toString(i), Fleet[i].getX(), Fleet[i].getY() + 26);
 
                 if(Fleet[i].getX() <= 215 && Fleet[i].getY() <= 215 && Fleet[i].getParked1()){
                     Color pedzel2 = new Color(255,255,255); g2D.setColor(pedzel2);
@@ -1183,12 +1162,6 @@ public class AirPort extends JFrame{
                    }
                 }
             });
-//            g2D.drawRect(0, 26, 270, 270);// start
-//            g2D.drawRect(190, 310+26, 40, 40);// cross poziom
-//            g2D.drawRect(310, 190+26, 40, 40);// cross pion
-//            g2D.drawRect(310, 560+26, 40, 40);// fly poziom
-//            g2D.drawRect(560, 310+26, 40, 40);// fly pion
-//            g2D.drawRect(400, 426, 400, 400);
         }
         g2D.dispose();
         bstrategy.show();
