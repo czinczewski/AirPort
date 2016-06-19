@@ -393,6 +393,11 @@ public class AirPort extends JFrame{
                         }
                     }
                     Fleet[i].setY(Fleet[i].getY() - Fleet[i].getSpeed());
+                    if(Fleet[i].getY() == 110){
+                        points = points +10;
+                        newPlane(i);
+                        System.out.println("Masz_" + points +"pkt.");
+                    }
                 }
             }else if(Fleet[i].getFly() && Fleet[i].getY() <= 110 && Fleet[i].getY() > 0 && Fleet[i].getX() <= 460 && Fleet[i].getX() >= 350 && Fleet[i].getDegree() <= 90){
                 Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
@@ -401,11 +406,6 @@ public class AirPort extends JFrame{
                 Fleet[i].setY((int) (110d - radius * Math.sin(radDegree)));
             }else if(Fleet[i].getFly() && Fleet[i].getY() < 20 && Fleet[i].getX() >= 460 && Fleet[i].getX() <= 840){
                  Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
-                 if(Fleet[i].getX() == 840){
-                    points = points +10;
-                    newPlane(i);
-                    System.out.println("Masz_" + points +"pkt.");
-                 }
             }
             
         }
@@ -760,6 +760,11 @@ public class AirPort extends JFrame{
                         }
                     }
                     Fleet[i].setX(Fleet[i].getX() - Fleet[i].getSpeed());
+                    if(Fleet[i].getX() == 110){
+                        points = points + 10;
+                        System.out.println("Masz_" + points +"pkt.");
+                        newPlane(i);
+                    }
                 }
             }else if(Fleet[i].getFly() && Fleet[i].getX() <= 110 && Fleet[i].getX() > 0 && Fleet[i].getY() <= 460 && Fleet[i].getY() >= 350 && Fleet[i].getDegree() <= 90){
                 Fleet[i].setDegree(Fleet[i].getDegree() + (Fleet[i].getSpeed()));
@@ -768,11 +773,6 @@ public class AirPort extends JFrame{
                 Fleet[i].setY((int) (460d + radius * Math.cos(radDegree)));
             }else if(Fleet[i].getFly() && Fleet[i].getX() < 20 && Fleet[i].getY() >= 460 && Fleet[i].getY() <= 840){
                  Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
-                 if(Fleet[i].getY() == 840){
-                    points = points + 10;
-                    System.out.println("Masz_" + points +"pkt.");
-                    newPlane(i);
-                 }
             }    
         }
         private void changeHorizontal(int i){
@@ -1040,18 +1040,40 @@ public class AirPort extends JFrame{
       }		      
     
     @Override
-    public void paint(Graphics g){
+    public void repaint(){
         BufferStrategy bstrategy = this.getBufferStrategy();
         Graphics2D g2D = (Graphics2D) bstrategy.getDrawGraphics();
         
         if(!start){ //Rysowanie menu
             if(!gameover){
                 g2D.drawImage(Menu, 0,  26, null);      // Obcina 26px z góry.
+                Color pedzel1 = new Color(255,0,0); 
+                Color pedzel2 = new Color(0,255,0); 
+                g2D.setColor(pedzel1);
+                g2D.fillRect(550, 340, 200, 50);
+                g2D.fillRect(550, 400, 200, 50);
+                g2D.fillRect(550, 460, 200, 50);
                 addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        if(e.getX() > 574 && e.getX() < 766 && e.getY() < 775 && e.getY() > 651)
+                        if(e.getX() > 574 && e.getX() < 766 && e.getY() < 775 && e.getY() > 651){
                             start = true;
+                        }
+                        if(e.getX() > 550 && e.getX() < 750 && e.getY() < 390 && e.getY() > 340){
+                            level = 1;
+                            g2D.setColor(pedzel2);
+                            g2D.fillRect(550, 340, 200, 50);
+                        }
+                        if(e.getX() > 550 && e.getX() < 750 && e.getY() < 450 && e.getY() > 400){
+                            level = 2;
+                            g2D.setColor(pedzel2);
+                            g2D.fillRect(550, 400, 200, 50);
+                        }
+                        if(e.getX() > 550 && e.getX() < 750 && e.getY() < 510 && e.getY() > 460){
+                            level = 3;
+                            g2D.setColor(pedzel2);
+                            g2D.fillRect(550, 460, 200, 50);
+                        }
                     }
                 });
             }else{  //Game Over
