@@ -319,8 +319,9 @@ public class AirPort extends JFrame{
             }else if(Fleet[i].getFly() && Fleet[i].getY() < 20 && Fleet[i].getX() >= 460 && Fleet[i].getX() <= 840){
                  Fleet[i].setX(Fleet[i].getX() + Fleet[i].getSpeed());
                  if(Fleet[i].getX() == 840){
-                    points=+10;
+                    points = points +10;
                     newPlane(i);
+                    System.out.println("Masz_" + points +"pkt.");
                  }
             }
         }
@@ -611,7 +612,8 @@ public class AirPort extends JFrame{
             }else if(Fleet[i].getFly() && Fleet[i].getX() < 20 && Fleet[i].getY() >= 460 && Fleet[i].getY() <= 840){
                  Fleet[i].setY(Fleet[i].getY() + Fleet[i].getSpeed());
                  if(Fleet[i].getY() == 840){
-                    points=+10;
+                    points = points + 10;
+                    System.out.println("Masz_" + points +"pkt.");
                     newPlane(i);
                  }
             }
@@ -651,11 +653,11 @@ public class AirPort extends JFrame{
                         if(Fleet[j].getX() >= Fleet[k].getX() && Fleet[j].getX() <= (Fleet[k].getX() + 30) && Fleet[j].getY() >= Fleet[k].getY() && Fleet[j].getY() <= (Fleet[k].getY() + 30 )){
                             Fleet[j].setCollision(true);
                             Fleet[k].setCollision(true);
-//                            System.out.println("Nr " + j + " zderzenie z nr " + k);
-//                            System.out.println("[" +Fleet[j].getX() + "," + Fleet[j].getY() + "]   [" +Fleet[k].getX() + "," + Fleet[k].getY() + "]" );
-//                            gameover = true;
-//                            start = false;
-//                            newFlota();
+                            System.out.println("Nr " + j + " zderzenie z nr " + k);
+                            System.out.println("[" +Fleet[j].getX() + "," + Fleet[j].getY() + "]   [" +Fleet[k].getX() + "," + Fleet[k].getY() + "]" );
+                            gameover = true;
+                            start = false;
+                            newFlota();
                         }
                     }
                 }
@@ -897,11 +899,15 @@ public class AirPort extends JFrame{
                 });
             }else{  //Game Over
                 g2D.drawImage(GameOver, 0,  26, null);  // Obcina 26px z góry.
+                Color pedzel1 = new Color(255,255,255); 
+                g2D.setColor(pedzel1);
+                g2D.drawString("Twoje punkty: ", 700, 700 + 26);
+                g2D.drawString(Integer.toString(points), 700, 720 + 26);
                 addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         if(e.getX() > 574 && e.getX() < 766 && e.getY() < 775 && e.getY() > 651)
-                            start = true; gameover = false;
+                            start = true; gameover = false; points = 0;
                     }
                 });
             }
